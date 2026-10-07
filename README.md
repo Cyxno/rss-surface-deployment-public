@@ -36,7 +36,7 @@ flowchart LR
 <!-- BEGIN GENERATED:sources — wordt ververst door tools/Build-Documentation.ps1 -->
 | Profiel | Model | Platform | Driverpakket van | INF | Fysieke status |
 |---|---|---|---|---|---|
-| SF4 | Surface Laptop 4 (AMD) | AMD | 2026-08-14 | 78 | ❌ **NOT PHYSICALLY VALIDATED** |
+| SF4 | Surface Laptop 4 (AMD) | AMD | 2026-08-14 | 78 | ✅ fysiek gevalideerd  |
 | SF5 | Surface Laptop 5 (Intel, consumer + for Business) | Intel | 2026-09-22 | 112 | ✅ fysiek gevalideerd |
 | SF6 | Surface Laptop 6 for Business (Intel) | Intel | 2026-09-22 | 116 | ✅ fysiek gevalideerd |
 | SF7 | Surface Laptop for Business 7th Edition with Intel | Intel | 2026-09-22 | 119 | ✅ fysiek gevalideerd | 
