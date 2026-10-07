@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the versions follow [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- All five profiles (SF4–SF8) are now **physically validated** (SF6 in the 2026-09 round; SF4, SF5, SF7 and SF8 in the 2026-10 round). The physical validation status is recorded in the canonical manifest and is reflected in the README, the manuals and the stick documentation.
+
 ## [2.0.0] — 2026-10-02
 
 A major modernization of the repository, the safety mechanisms and the documentation. Deployment behavior on supported hardware is unchanged; the new guardrails are strictly fail-safe (they stop more often, never write more).

@@ -298,7 +298,7 @@ Cloning/duplicating: a block-level clone remains the recommended route; give the
 
 Automated tests never replace physical Surface tests. Per model, the quicklist `docs/PHYSICAL-TEST-QUICKLIST.md` and the matrix `docs/TESTMATRIX.md` apply (boot, detection, routing/safety, deployment, first boot, OOBE, input, Wi-Fi, USB, Device Manager, Autopilot/Intune, reboot/shutdown). Negative physical tests: an unsupported model shows red without touching Disk 0; ARM/Snapdragon is refused; a missing archive stops safely; no step ever asks for input.
 
-Current physical status: only **SF6 is physically validated**; SF4, SF5, SF7 and SF8 are **NOT PHYSICALLY VALIDATED** (Appendix B). A model may only be deployed in production after a successful physical test of that model on that media round.
+Current physical status: all five profiles are **PHYSICALLY VALIDATED** — SF6 in the 2026-09 round, SF4, SF5, SF7 and SF8 in the 2026-10 round (Appendix B). A model may only be deployed in production after a successful physical test of that model on that media round.
 
 # 17. Production release
 
@@ -369,7 +369,6 @@ See chapter 17 and the separate procedure (`RSS_Test_and_Release_Procedure`). Ve
 
 - Only the five named profiles; all other hardware (including ARM/Snapdragon and the 5G variant) is deliberately out of scope.
 - SF4 covers only the AMD variant; SF8 only the Intel Business edition.
-- Physical validation is missing for SF4, SF5, SF7 and SF8 on the current media round.
 - The SafeOS DU {{windows.winreUpdate.kb}} in the production media has been superseded by {{windows.winreUpdate.supersededBy.kb}}; adopt the successor at the next rebuild.
 - Windows 26H2 is available but is a separate image track (do not adopt it silently).
 - Surface Laptop 4 driver/firmware servicing ends {{surfaceDriverPacks.0.lifecycle.driverFirmwareEol}}.

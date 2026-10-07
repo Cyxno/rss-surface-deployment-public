@@ -157,7 +157,7 @@
       "infCount": 78,
       "archiveSha256": "4DC1160F8E083ADB892F87BA737A5D86F0D57A2462F3E20397C2D703D86E95E4",
       "lifecycle": { "driverFirmwareEol": "2027-04-15" },
-      "physicalValidation": { "status": "NOT PHYSICALLY VALIDATED", "date": null, "note": "no physical test recorded" }
+      "physicalValidation": { "status": "PHYSICALLY VALIDATED", "date": "2026-10", "note": "field test of the full deployment + first boot (2026-10 validation round)" }
     },
     {
       "profile": "SF5",
@@ -184,7 +184,7 @@
       "infCount": 112,
       "archiveSha256": "CCE6F530B284ED88BBBF5D1944720340DA6BAC9820FB5614897FF8ECC7279102",
       "lifecycle": { "driverFirmwareEol": "2028-10-25" },
-      "physicalValidation": { "status": "NOT PHYSICALLY VALIDATED", "date": null, "note": "no physical test recorded" }
+      "physicalValidation": { "status": "PHYSICALLY VALIDATED", "date": "2026-10", "note": "field test of the full deployment + first boot (2026-10 validation round)" }
     },
     {
       "profile": "SF6",
@@ -237,7 +237,7 @@
       "infCount": 119,
       "archiveSha256": "D0AAD5C432CC095B309187BCED2277D33FC7C6F49E507E0D2F1B464294413C4B",
       "lifecycle": { "driverFirmwareEol": "2031-02-18" },
-      "physicalValidation": { "status": "NOT PHYSICALLY VALIDATED", "date": null, "note": "no physical test recorded" }
+      "physicalValidation": { "status": "PHYSICALLY VALIDATED", "date": "2026-10", "note": "field test of the full deployment + first boot (2026-10 validation round)" }
     },
     {
       "profile": "SF8",
@@ -273,7 +273,7 @@
       "infCount": 120,
       "archiveSha256": "F149B6533373597AE16BF6107354DEF15ECAC7D952948F0C2A465F8485DB5FDE",
       "lifecycle": { "driverFirmwareEol": "2032-05-19" },
-      "physicalValidation": { "status": "NOT PHYSICALLY VALIDATED", "date": null, "note": "software validated (34 PASS / 0 WARN / 0 FAIL); physical test still pending" }
+      "physicalValidation": { "status": "PHYSICALLY VALIDATED", "date": "2026-10", "note": "field test of the full deployment + first boot (2026-10 validation round); previously software validated (34 PASS / 0 WARN / 0 FAIL)" }
     }
   ],
   "explicitlyUnsupported": [

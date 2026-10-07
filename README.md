@@ -36,11 +36,11 @@ flowchart LR
 <!-- BEGIN GENERATED:sources — refreshed by tools/Build-Documentation.ps1 -->
 | Profile | Model | Platform | Driver package from | INF | Physical status |
 |---|---|---|---|---|---|
-| SF4 | Surface Laptop 4 (AMD) | AMD | 2026-08-14 | 78 | ✅ physically validated |
-| SF5 | Surface Laptop 5 (Intel, consumer + for Business) | Intel | 2026-09-22 | 112 | ✅ physically validated |
+| SF4 | Surface Laptop 4 (AMD) | AMD | 2026-08-14 | 78 | ✅ physically validated (2026-10) |
+| SF5 | Surface Laptop 5 (Intel, consumer + for Business) | Intel | 2026-09-22 | 112 | ✅ physically validated (2026-10) |
 | SF6 | Surface Laptop 6 for Business (Intel) | Intel | 2026-09-22 | 116 | ✅ physically validated (2026-09) |
-| SF7 | Surface Laptop for Business 7th Edition with Intel | Intel | 2026-09-22 | 119 | ✅ physically validated |
-| SF8 | Surface Laptop for Business 8th Edition with Intel (NOT Snapdragon/ARM) | Intel | 2026-09-11 | 120 | ✅ physically validated |
+| SF7 | Surface Laptop for Business 7th Edition with Intel | Intel | 2026-09-22 | 119 | ✅ physically validated (2026-10) |
+| SF8 | Surface Laptop for Business 8th Edition with Intel (NOT Snapdragon/ARM) | Intel | 2026-09-11 | 120 | ✅ physically validated (2026-10) |
 
 **Production medium:** Windows 11 Pro 25H2, build 26200.9457 (LCU KB5129195, 2026-09-14), nl-NL · ADK 10.1.26100.9457 · wimlib 1.14.5 · boot.wim SHA-256 `797CCD8…ECEA0563`
 <!-- EIND GENERATED:sources -->
