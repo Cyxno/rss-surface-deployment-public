@@ -1,0 +1,52 @@
+RSS - Surface Deployment Stick
+Windows 11 Pro {{windows.version}} x64 (build {{windows.build}}, {{windows.cumulativeUpdate.kb}}, {{windows.cumulativeUpdate.released}})
+Profielen: {{TABLE:PROFILELINE}}
+NIEUW: SF8 dekt uitsluitend de Intel Business-editie (SystemProductName 'Surface Laptop for Business 13.8in/15in 8th Ed Intel'); ARM/Snapdragon wordt veilig geweigerd.
+NIEUW: Stickdraagend manifest (sources.json) wordt door de deployment vóór het wissen gelezen; image- en driverhashes worden vóór de eerste schrijfactie gecontroleerd.
+
+ADK WINPE-CONSTRUCTIE (bouwmoment {{project.productionRelease.mediaBuilt}})
+- Gebouwd vanaf de officiele Microsoft Windows ADK {{adk.version}} WinPE-bron.
+- Officiele WinPE-componenten: {{TABLE:WINPEOCS}}.
+- Scratchruimte: {{adk.winpeScratchSpaceMB}} MB.
+- Alle deploymentlogica staat in X:\Deploy\RSS-Deploy.ps1 + X:\Deploy\RSS-SafetyLib.ps1; wimlib {{wimlib.version}} staat in X:\Tools.
+
+AUTOMATISCHE WERKWIJZE
+- PowerShell detecteert de ondersteunde Surface-modellen en controleert naam, SystemSKU (allowlist uit sources.json) en CPU-vendor.
+- Snapdragon/ARM-namen, weiger-SKU's en CPU-afwijkingen worden expliciet geweigerd.
+- De RSS-datapartitie moet exact eenmaal worden gevonden (herkenningspaden: SF4- en SF8-install.esd).
+- Diskselectie: uitsluitend exact een interne NVMe-schijf op Disk 0; meerdere NVMe-schijven of USB op Disk 0 = veilige stop.
+- Image- en driverarchief-hash worden vóór de aftelling tegen het manifest gecontroleerd.
+- Na 15 seconden wordt Disk 0 automatisch gewist en als GPT ingedeeld (EFI 260 MB, MSR 16 MB, Windows NTFS).
+
+DEPLOYMENT
+1. ADK DISM past de modelspecifieke Windows 11 Pro image-index 1 toe met integriteitscontrole.
+2. Het gecomprimeerde driverarchief wordt met integriteitscontrole tijdelijk op de doel-NVMe uitgepakt.
+3. Het volledige Microsoft-pakket wordt exact op INF-aantal gecontroleerd en via Add-WindowsDriver offline geinjecteerd.
+4. BCDBoot maakt UEFI-opstartbestanden; bootmgfw.efi wordt gecontroleerd.
+5. Bij succes volgt automatische herstart; bij iedere fout blijft WinPE veilig staan met een leesbare fout en log.
+
+MODELROUTING (INF-aantallen uit config/sources.json)
+{{TABLE:ROUTING}}
+
+LOG
+- <Images>:\RSS-ADK-Deploy.log bevat manifest-versie, model, SKU, CPU, fysieke disks, hashcontroles, alle DISM-uitvoer, DriverStore-aantallen en het eindresultaat.
+
+OFFICIELE MICROSOFT-PAKKETTEN (in deze release)
+{{TABLE:PACKS}}
+- Alle MSI-handtekeningen zijn geldig en van Microsoft Corporation (Authenticode).
+- Alle archieven zijn volledig geverifieerd en proefuitgepakt met exact het verwachte INF-aantal.
+
+WINDOWS 11 BRON
+- Officiele UUP-set 'Windows 11, version {{windows.version}} ({{windows.build}})' amd64, {{windows.languageDisplay}}, {{windows.edition}}.
+- Geintegreerd tijdens de convert: checkpoint KB5043080, LCU {{windows.cumulativeUpdate.kb}}, SSU KB5124007, SafeOS DU {{windows.winreUpdate.kb}} (WinRE), .NET CU {{windows.netFrameworkUpdate.kb}}.
+- {{windows.notUsed.kb}} ({{windows.notUsed.build}}) is een preview-update en is bewust NIET gebruikt.
+- Installatietaal: {{windows.languageDisplay}}; de installatie blijft volledig offline en MDM/Autopilot-geschikt.
+
+ACTIEVE ADK WINPE BOOT-WIM
+SHA-256: {{media.bootWimSha256}}
+
+RELEASE
+- Projectversie: {{project.version}} - productietag: {{project.productionRelease.tag}} ({{project.productionRelease.tagDate}})
+- Fysieke validatie: {{project.productionRelease.validationState}}
+
+BIJGEWOON: {{project.productionRelease.mediaBuilt}}

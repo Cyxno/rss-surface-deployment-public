@@ -1,0 +1,44 @@
+name: Foutmelding / defect
+description: Meld een defect in de repository, tools of een mislukte deployment
+labels: [bug]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Deployment (RSS-Deploy / WinPE)
+        - Media-build (Update-RSSMedia)
+        - Validatie (Validate-RSSMedia / Pester)
+        - Manifest (config/sources.json)
+        - Documentatie
+        - Anders
+    validations:
+      required: true
+  - type: dropdown
+    id: profile
+    attributes:
+      label: Surface-profiel (indien van toepassing)
+      options: ["n.v.t.", "SF4", "SF5", "SF6", "SF7", "SF8", "onbekend / niet-ondersteund"]
+    validations:
+      required: true
+  - type: textarea
+    id: beschrijving
+    attributes:
+      label: Wat gebeurde er (symptoom)?
+      description: Vermeld de exacte foutmelding van het rode scherm of de tool-output
+    validations:
+      required: true
+  - type: textarea
+    id: bewijs
+    attributes:
+      label: Bewijs
+      description: Relevant deel van RSS-ADK-Deploy.log of RSS-Media-Validation.txt — géén serienummers of andere apparaatgegevens
+    validations:
+      required: true
+  - type: textarea
+    id: verwacht
+    attributes:
+      label: Wat werd verwacht?
+    validations:
+      required: true

@@ -1,0 +1,6 @@
+ialpss2gpio2\iaLPSS2_GPIO2_LNL.inf
+ialpss2i2c\iaLPSS2_I2C_LNL.inf
+quickspi\IntelQuickSPI.inf
+SerialHub\SurfaceSerialHubDriver.inf
+hidminirust\surface_hid_mini.inf
+integration\SurfaceIntegrationDriver.inf

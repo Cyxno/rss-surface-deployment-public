@@ -1,0 +1,7 @@
+adlserial\iaLPSS2_GPIO2_ADL.inf
+adlserial\iaLPSS2_I2C_ADL.inf
+surfaceserialhubdriver\SurfaceSerialHubDriver.inf
+surfacehidminidriver\SurfaceHidMiniDriver.inf
+intelprecisetouch\IntelTHCBase.inf
+surfaceintegration\SurfaceIntegrationDriver.inf
+

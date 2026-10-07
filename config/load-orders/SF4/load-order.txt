@@ -1,0 +1,9 @@
+amdgpio2\amdgpio2.inf
+amdi2c\amdi2c.inf
+amdspi\amdspi.inf
+surfacedigitizerhidspiextnpackage\SurfaceDigitizerHidSpiExtnPackage.inf
+surfaceintegration\SurfaceIntegrationDriver.inf
+surfaceserialhub\SurfaceSerialHubDriver.inf
+surfacesystemmanagementframework\SurfaceSystemManagementFrameworkDriver.inf
+surfacehidmini\SurfaceHidMiniDriver.inf
+

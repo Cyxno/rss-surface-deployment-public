@@ -1,0 +1,42 @@
+# Microsoft installation media and generated images
+*.iso
+*.wim
+*.esd
+*.swm
+*.ffu
+*.vhd
+*.vhdx
+
+# Microsoft/Surface packages and extracted payloads
+*.msi
+*.msu
+*.cab
+drivers/
+media/
+mount/
+
+# Generated build state and logs
+*.log
+*.status
+*.tmp
+*.bak
+boot-adk-full.wim
+
+# Deployment output can contain device-specific information
+RSS-*.log
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+# Lokale test- en validatieartifacts
+DriverArchive-DISM-Test/
+DriverArchive-DISM-Test-result.json
+RSS-Media-Validation.txt
+
+# Lokale renderartifacts van de documentatiebuild
+docs/generated/_png/
+docs/generated/_docxpdf/
+testResults.xml

@@ -1,0 +1,5 @@
+ialpss2gpio2ptl\iaLPSS2_GPIO2_PTL.inf
+ialpss2i2cptl\iaLPSS2_I2C_PTL.inf
+SerialHub\SurfaceSerialHubDriver.inf
+hidminirust\surface_hid_mini.inf
+integration\SurfaceIntegrationDriver.inf

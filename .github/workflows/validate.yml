@@ -1,0 +1,76 @@
+name: validate
+
+# Statistische en offline controles. CI voert NOOIT een deployment,
+# diskactie of download van Microsoft-media uit.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  powershell:
+    name: PowerShell — syntax, linting, guardrailtests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module PSScriptAnalyzer -RequiredVersion 1.25.0 -Scope CurrentUser -Force
+          $errors = Invoke-ScriptAnalyzer -Path . -Recurse -Settings .PSScriptAnalyzerSettings.psd1 -Severity Error
+          $errors | Format-Table -AutoSize | Out-String | Write-Host
+          if ($errors) { throw "PSScriptAnalyzer: $($errors.Count) fout(en)" }
+
+      - name: Pester guardrailtests (gemockt)
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          $p = Get-Module Pester -ListAvailable | Where-Object Version -ge 5.7 | Sort-Object Version -Descending | Select-Object -First 1
+          if (-not $p) { Install-Module Pester -RequiredVersion 5.7.1 -Scope CurrentUser -Force -SkipPublisherCheck }
+          Import-Module Pester -MinimumVersion 5.7
+          $config = New-PesterConfiguration
+          $config.Run.Path = 'tests'
+          $config.Run.Exit = $true
+          $config.Output.Verbosity = 'Detailed'
+          Invoke-Pester -Configuration $config
+
+  manifest:
+    name: Manifest- en repositoryconsistentie
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test-ManifestConsistency
+        shell: pwsh
+        run: ./tools/Test-ManifestConsistency.ps1 -CIChecksums
+
+      - name: Interne markdown-links
+        shell: pwsh
+        run: ./tools/Test-InternalLinks.ps1
+
+      - name: Geen Microsoft-binaries in Git
+        shell: pwsh
+        run: |
+          $forbidden = '\.(wim|esd|msi|msu|iso|cab|vhd(x)?|swm|ffu)$'
+          $tracked = git ls-files
+          $bad = $tracked | Where-Object { $_ -match $forbidden }
+          if ($bad) { throw "verboden binaries in Git: $($bad -join ', ')" }
+          Write-Host "OK: geen Microsoft-binaries getrackt ($($tracked.Count) bestanden gecontroleerd)"
+
+  secrets:
+    name: Secretscan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

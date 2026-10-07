@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Beheervraag / usage-vraag
+    url: ../../#beheer-security-en-privacy
+    about: Voor vragen over gebruik van de stick, zie eerst de operationele handleiding in docs/generated.

@@ -1,0 +1,8 @@
+# Alleen GitHub Actions-pinning: het project heeft geen applicatie-afhankelijkheden
+# in package managers; PowerShell-modules zijn expliciet gepind in de workflow.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
