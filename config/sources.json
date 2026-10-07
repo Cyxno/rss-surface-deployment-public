@@ -1,29 +1,29 @@
 {
-  "$schema": "RSS-canonical-bronmanifest v2",
+  "$schema": "RSS-canonical-source-manifest v2",
   "manifestVersion": "2.0",
   "generated": "2026-10-02",
   "notes": [
-    "Dit bestand is DE enige bron van waarheid voor versies, modellen, SystemSKU's, hashes en INF-aantallen.",
-    "README, validatiescripts, deploymentlogica, stickdocumentatie en de DOCX/PDF-handleidingen leiden hun waarden hiervan af.",
-    "Alle bestanden komen van officiële Microsoft-servers (download.microsoft.com / tlu.dl.delivery.mp.microsoft.com).",
-    "SHA-256-waarden zijn lokaal berekend na download en gevalideerd op geldige Authenticode-handtekeningen van Microsoft Corporation.",
-    "INF-aantallen zijn bepaald door volledige msiexec /a-extractie en recursieve telling; herbevestigd door proefuitpakken van elk archief.",
-    "RSS-Deploy zelf gebruikt internet nooit; dit manifest is bedoeld voor het herbouwen en valideren van de stick en reist mee op de Images-partitie.",
-    "Actueelheidscontrole: 2026-10-02 tegen learn.microsoft.com, support.microsoft.com en de Microsoft Download Center-pagina's (zie docs/source voor bronvermelding)."
+    "This file is THE single source of truth for versions, models, SystemSKUs, hashes and INF counts.",
+    "The README, validation scripts, deployment logic, stick documentation and the DOCX/PDF manuals derive their values from this file.",
+    "All files come from official Microsoft servers (download.microsoft.com / tlu.dl.delivery.mp.microsoft.com).",
+    "SHA-256 values were computed locally after download and validated against valid Authenticode signatures from Microsoft Corporation.",
+    "INF counts were determined by full msiexec /a extraction and recursive counting; reconfirmed by test-extracting every archive.",
+    "RSS-Deploy itself never uses the internet; this manifest is intended for rebuilding and validating the stick and travels on the Images partition.",
+    "Freshness check: 2026-10-02 against learn.microsoft.com, support.microsoft.com and the Microsoft Download Center pages (see docs/source for source references)."
   ],
   "project": {
     "name": "RSS - Surface Deployment Stick",
     "version": "2.0.0",
     "internalName": "RSS Surface Deployment Stick V2",
-    "classification": "Source-available - geen opensourcelicentie",
-    "audience": "ICT-beheer",
+    "classification": "Source-available - no open-source license",
+    "audience": "IT administration",
     "productionRelease": {
       "tag": "rss-2026-09-sf8",
       "tagDate": "2026-09-24",
       "mediaBuilt": "2026-09-23",
       "windowsBuild": "26200.9457",
       "bootWimSha256": "797CCD813A1A9A375CFF22EDD4145600EFCA2F0B4FD20482F866C3B8ECEA0563",
-      "validationState": "media validated; fysiek gevalideerd op SF6 (veldtest 2026-09); overige modellen NOT PHYSICALLY VALIDATED"
+      "validationState": "media validated; physically validated on SF6 (field test 2026-09); other models NOT PHYSICALLY VALIDATED"
     }
   },
   "windows": {
@@ -35,20 +35,20 @@
     "languageDisplay": "Nederlands (nl-NL)",
     "build": "26200.9457",
     "baseline": {
-      "description": "UUP-set 'Windows 11, version 25H2 (26200.9457)' amd64, uuid f4ad9cf8-3ef1-40e7-8a1d-f3034b1ded62",
+      "description": "UUP set 'Windows 11, version 25H2 (26200.9457)' amd64, uuid f4ad9cf8-3ef1-40e7-8a1d-f3034b1ded62",
       "build": "26200.9457",
       "source": "https://uupdump.net/get.php?id=f4ad9cf8-3ef1-40e7-8a1d-f3034b1ded62&pack=nl-nl&edition=professional",
-      "downloadServer": "tlu.dl.delivery.mp.microsoft.com (officiële Microsoft-pakketten)"
+      "downloadServer": "tlu.dl.delivery.mp.microsoft.com (official Microsoft packages)"
     },
     "cumulativeUpdate": {
       "kb": "KB5129195",
       "name": "2026-09 Cumulative Update for Windows 11, version 25H2 for x64-based Systems (KB5129195)",
       "build": "26200.9457",
       "released": "2026-09-14",
-      "kind": "productie/security out-of-band (LCU met gebundelde SSU KB5124007)",
+      "kind": "production/security out-of-band (LCU with bundled SSU KB5124007)",
       "catalog": "https://www.catalog.update.microsoft.com/Search.aspx?q=KB5129195",
-      "appliedVia": "geïntegreerd in de UUP-convert (AddUpdates=1); checkpoint KB5054156 zit in dezelfde set",
-      "verifiedCurrent": "2026-10-02: laatste stabiele (niet-preview) LCU voor 25H2"
+      "appliedVia": "integrated in the UUP convert (AddUpdates=1); checkpoint KB5054156 is included in the same set",
+      "verifiedCurrent": "2026-10-02: latest stable (non-preview) LCU for 25H2"
     },
     "netFrameworkUpdate": {
       "kb": "KB5126052",
@@ -62,22 +62,22 @@
       "name": "2026-09 Safe OS Dynamic Update for Windows 11, version 25H2 for x64-based Systems",
       "released": "2026-09-08",
       "catalog": "https://www.catalog.update.microsoft.com/Search.aspx?q=KB5124015",
-      "note": "WinRE wordt niet door de LCU geserviced; SafeOS DU is vereist. Gebruikt in de huidige productiemedia.",
+      "note": "WinRE is not serviced by the LCU; the SafeOS DU is required. Used in the current production media.",
       "supersededBy": {
         "kb": "KB5125758",
         "released": "2026-09-22",
         "catalog": "https://www.catalog.update.microsoft.com/Search.aspx?q=KB5125758",
-        "action": "overnemen bij de eerstvolgende media-herbouw (geen herbouw uitsluitend voor dit pakket)"
+        "action": "adopt at the next media rebuild (no rebuild solely for this package)"
       }
     },
     "notUsed": {
       "kb": "KB5124010",
       "build": "26200.9550",
       "released": "2026-09-22",
-      "reason": "Preview-update; productie blijft op de laatste stabiele security-release"
+      "reason": "Preview update; production remains on the latest stable security release"
     },
     "servicedImage": {
-      "description": "Geïnstalleerde basis (26100.1, English International, Professional) + eKB KB5054156 + checkpoint KB5043080 + LCU KB5129195 + .NET KB5126052 + SafeOS KB5124015 (winre), offline geserviced met ADK-DISM op 2026-09-23",
+      "description": "Installed base (26100.1, English International, Professional) + eKB KB5054156 + checkpoint KB5043080 + LCU KB5129195 + .NET KB5126052 + SafeOS KB5124015 (winre), offline serviced with ADK-DISM on 2026-09-23",
       "verifiedBuild": "26200.9457",
       "installLanguage": "nl-NL",
       "installEsdSha256": "1C9655381AD363D5EE8095DB9DB6420B6ED99C79F4521D93F73C819C1DB03D77",
@@ -86,7 +86,7 @@
     "endOfServicing": {
       "homePro": "2027-10-12",
       "enterpriseEducation": "2028-10-10",
-      "note": "Windows 11 26H2 (build 26300) is sinds 2026-09-29 GA in gefaseerde uitrol; evalueren als aparte image-track, niet als stilzwijgende vervanging (zie nextRefresh)."
+      "note": "Windows 11 26H2 (build 26300) has been GA in phased rollout since 2026-09-29; evaluate as a separate image track, not as a silent replacement (see nextRefresh)."
     }
   },
   "adk": {
@@ -105,36 +105,36 @@
     ],
     "winpeLanguagePacks": "en-us",
     "winpeScratchSpaceMB": 512,
-    "verifiedCurrent": "2026-10-02: actuele algemene ADK; geen nieuwere algemene versie beschikbaar"
+    "verifiedCurrent": "2026-10-02: current general-availability ADK; no newer GA version available"
   },
   "wimlib": {
     "version": "1.14.5",
     "released": "2026-01-30",
     "url": "https://wimlib.net/downloads/wimlib-1.14.5-windows-x86_64-bin.zip",
     "sha256": "2F446D6FA3866582175F1A22A7BE198EEEE0AEC7ABA5B4E04AD25C99EAE2D265",
-    "verifiedCurrent": "2026-10-02: nieuwste release; geen breaking CLI-wijzigingen sinds 1.14.0"
+    "verifiedCurrent": "2026-10-02: newest release; no breaking CLI changes since 1.14.0"
   },
   "media": {
     "partitionStyle": "MBR",
     "partitions": [
-      { "label": "WINPE", "fileSystem": "FAT32", "sizeGB": 2, "active": true, "role": "UEFI-bootbestanden en aangepaste WinPE boot.wim" },
-      { "label": "Images", "fileSystem": "NTFS", "size": "rest van het medium", "role": "Windows-images, driverarchieven, WinPE-drivers, manifest, documentatie en log" }
+      { "label": "WINPE", "fileSystem": "FAT32", "sizeGB": 2, "active": true, "role": "UEFI boot files and the custom WinPE boot.wim" },
+      { "label": "Images", "fileSystem": "NTFS", "size": "rest of the medium", "role": "Windows images, driver archives, WinPE drivers, manifest, documentation and log" }
     ],
     "bootWimSha256": "797CCD813A1A9A375CFF22EDD4145600EFCA2F0B4FD20482F866C3B8ECEA0563",
-    "dataPartitionDetection": "exact één volume met RSSSetup\\SF4\\sources\\install.esd én RSSSetup\\SF8\\sources\\install.esd",
-    "manifestOnStick": "sources.json (deze file) staat in de wortel van de Images-partitie en wordt door RSS-Deploy gelezen vóór de eerste destructieve handeling"
+    "dataPartitionDetection": "exactly one volume with RSSSetup\\SF4\\sources\\install.esd and RSSSetup\\SF8\\sources\\install.esd",
+    "manifestOnStick": "sources.json (this file) sits in the root of the Images partition and is read by RSS-Deploy before the first destructive action"
   },
   "diskSafety": {
-    "targetDiskRule": "uitsluitend de enige interne NVMe-schijf; in WinPE is dat Disk 0",
+    "targetDiskRule": "only the single internal NVMe disk; in WinPE that is Disk 0",
     "rules": [
-      "UNKNOWN  = STOP - onbekend model, lege SystemSKU of onbekende SKU",
-      "AMBIGUOUS = STOP - nul of meerdere kandidaat-datapartities, meerdere NVMe-schijven",
-      "UNSUPPORTED = STOP - niet-ondersteund model, ARM/Snapdragon, verkeerde CPU-vendor, geweigerde SKU",
-      "MISSING  = STOP - ontbrekende image, archief, manifest of load-order",
-      "INVALID  = STOP - hash-wijkt-af, onleesbaar archief, verkeerd INF-aantal, Disk 0 geen NVMe"
+      "UNKNOWN  = STOP - unknown model, empty SystemSKU or unknown SKU",
+      "AMBIGUOUS = STOP - zero or multiple candidate data partitions, multiple NVMe disks",
+      "UNSUPPORTED = STOP - unsupported model, ARM/Snapdragon, wrong CPU vendor, refused SKU",
+      "MISSING  = STOP - missing image, archive, manifest or load order",
+      "INVALID  = STOP - hash mismatch, unreadable archive, wrong INF count, Disk 0 not NVMe"
     ],
     "countdownSeconds": 15,
-    "deploymentUsbNeverTarget": "de USB-datapartitie mag nooit op Disk 0 liggen en mag nooit de NVMe-doelschijf zijn"
+    "deploymentUsbNeverTarget": "the USB data partition may never sit on Disk 0 and may never be the NVMe target disk"
   },
   "surfaceDriverPacks": [
     {
@@ -145,7 +145,7 @@
       "cpuVendor": "AuthenticAMD",
       "systemSku": {
         "supported": ["Surface_Laptop_4_1958:1959", "Surface_Laptop_4_1952:1953"],
-        "skuNote": "AMD-varianten (13,5 en 15 inch); de Intel-variant van de Laptop 4 is een apart pakket en valt buiten scope"
+        "skuNote": "AMD variants (13.5 and 15 inch); the Intel variant of the Laptop 4 is a separate package and is out of scope"
       },
       "downloadPage": "https://www.microsoft.com/en-us/download/details.aspx?id=102923",
       "msiFilename": "SurfaceLaptop4_AMD_Win11_22631_26.072.27963.0.msi",
@@ -157,7 +157,7 @@
       "infCount": 78,
       "archiveSha256": "4DC1160F8E083ADB892F87BA737A5D86F0D57A2462F3E20397C2D703D86E95E4",
       "lifecycle": { "driverFirmwareEol": "2027-04-15" },
-      "physicalValidation": { "status": "NOT PHYSICALLY VALIDATED", "date": null, "note": "geen fysieke test vastgelegd" }
+      "physicalValidation": { "status": "NOT PHYSICALLY VALIDATED", "date": null, "note": "no physical test recorded" }
     },
     {
       "profile": "SF5",
@@ -172,7 +172,7 @@
           "Surface_Laptop_5_1979",
           "Surface_Laptop_5_for_Business_1979"
         ],
-        "skuNote": "consumer- en commercial-varianten, 13,5 en 15 inch"
+        "skuNote": "consumer and commercial variants, 13.5 and 15 inch"
       },
       "downloadPage": "https://www.microsoft.com/en-us/download/details.aspx?id=104679",
       "msiFilename": "SurfaceLaptop5_Win11_22631_26.084.43979.0.msi",
@@ -184,7 +184,7 @@
       "infCount": 112,
       "archiveSha256": "CCE6F530B284ED88BBBF5D1944720340DA6BAC9820FB5614897FF8ECC7279102",
       "lifecycle": { "driverFirmwareEol": "2028-10-25" },
-      "physicalValidation": { "status": "NOT PHYSICALLY VALIDATED", "date": null, "note": "geen fysieke test vastgelegd" }
+      "physicalValidation": { "status": "NOT PHYSICALLY VALIDATED", "date": null, "note": "no physical test recorded" }
     },
     {
       "profile": "SF6",
@@ -194,7 +194,7 @@
       "cpuVendor": "GenuineIntel",
       "systemSku": {
         "supported": ["Surface_Laptop_6_for_Business_2033", "Surface_Laptop_6_for_Business_2035"],
-        "skuNote": "13,5 en 15 inch"
+        "skuNote": "13.5 and 15 inch"
       },
       "downloadPage": "https://www.microsoft.com/en-us/download/details.aspx?id=105946",
       "msiFilename": "SurfaceLaptop6forBusiness_Win11_22631_26.082.26400.0.msi",
@@ -206,7 +206,7 @@
       "infCount": 116,
       "archiveSha256": "AD22E0B052C7574F5BA350A05BDCA6990FCFC6604D84A85519DAB9116CD8B05D",
       "lifecycle": { "driverFirmwareEol": "2030-04-09" },
-      "physicalValidation": { "status": "PHYSICALLY VALIDATED", "date": "2026-09", "note": "veldtest volledige deployment + eerste boot (bron: releasehistorie en productiedocumentatie)" }
+      "physicalValidation": { "status": "PHYSICALLY VALIDATED", "date": "2026-09", "note": "field test of the full deployment + first boot (source: release history and production documentation)" }
     },
     {
       "profile": "SF7",
@@ -225,7 +225,7 @@
           "Surface_Laptop_7th_Edition_With_Intel_For_Business_2108"
         ],
         "refused": ["Surface_Laptop_5G_7th_Edition_With_Intel_For_Business_2119"],
-        "skuNote": "de 5G-variant (SKU _2119) is een apart product met een apart driverpakket en wordt expliciet geweigerd"
+        "skuNote": "the 5G variant (SKU _2119) is a separate product with a separate driver package and is explicitly refused"
       },
       "downloadPage": "https://www.microsoft.com/en-us/download/details.aspx?id=108014",
       "msiFilename": "SurfaceLaptop7withIntel_Win11_22631_26.081.15509.0.msi",
@@ -237,11 +237,11 @@
       "infCount": 119,
       "archiveSha256": "D0AAD5C432CC095B309187BCED2277D33FC7C6F49E507E0D2F1B464294413C4B",
       "lifecycle": { "driverFirmwareEol": "2031-02-18" },
-      "physicalValidation": { "status": "NOT PHYSICALLY VALIDATED", "date": null, "note": "geen fysieke test vastgelegd" }
+      "physicalValidation": { "status": "NOT PHYSICALLY VALIDATED", "date": null, "note": "no physical test recorded" }
     },
     {
       "profile": "SF8",
-      "product": "Surface Laptop for Business 8th Edition with Intel (NIET Snapdragon/ARM)",
+      "product": "Surface Laptop for Business 8th Edition with Intel (NOT Snapdragon/ARM)",
       "architecture": "amd64",
       "smbiosProductNames": [
         "Surface Laptop for Business 13.8in 8th Ed Intel",
@@ -261,7 +261,7 @@
           "Surface_Laptop_for_Business_13_8in_8th_Ed_Snapdragon_2138",
           "Surface_Laptop_for_Business_15in_8th_Ed_Snapdragon_2139"
         ],
-        "armRefusal": "ARM-varianten heten '... 8th Ed Snapdragon' (SKU _2036/_2037/_2138/_2139) en worden expliciet geweigerd; CPU-vendor moet GenuineIntel zijn."
+        "armRefusal": "ARM variants are named '... 8th Ed Snapdragon' (SKU _2036/_2037/_2138/_2139) and are explicitly refused; the CPU vendor must be GenuineIntel."
       },
       "downloadPage": "https://www.microsoft.com/en-us/download/details.aspx?id=108669",
       "msiFilename": "SurfaceLaptop8withIntel_Win11_26100_26.083.37379.0.msi",
@@ -273,38 +273,38 @@
       "infCount": 120,
       "archiveSha256": "F149B6533373597AE16BF6107354DEF15ECAC7D952948F0C2A465F8485DB5FDE",
       "lifecycle": { "driverFirmwareEol": "2032-05-19" },
-      "physicalValidation": { "status": "NOT PHYSICALLY VALIDATED", "date": null, "note": "softwarematig gevalideerd (34 PASS / 0 WARN / 0 FAIL); fysieke test staat nog uit" }
+      "physicalValidation": { "status": "NOT PHYSICALLY VALIDATED", "date": null, "note": "software validated (34 PASS / 0 WARN / 0 FAIL); physical test still pending" }
     }
   ],
   "explicitlyUnsupported": [
     {
       "product": "Surface Laptop 4 (Intel)",
-      "reason": "SF4-routing is bewust AMD-only; de Intel-variant gebruikt een ander driverpakket",
+      "reason": "SF4 routing is deliberately AMD-only; the Intel variant uses a different driver package",
       "downloadPage": "https://www.microsoft.com/en-us/download/details.aspx?id=102924",
-      "guard": "naammatch op 'Surface Laptop 4' + CPU-vendor-controle (AuthenticAMD vereist)"
+      "guard": "name match on 'Surface Laptop 4' + CPU vendor check (AuthenticAMD required)"
     },
     {
       "product": "Surface Laptop 7th Edition (Snapdragon)",
-      "reason": "ARM/Snapdragon wordt nooit gedeployed; apart driverpakket",
+      "reason": "ARM/Snapdragon is never deployed; separate driver package",
       "downloadPage": "https://www.microsoft.com/en-us/download/details.aspx?id=106120",
-      "guard": "Snapdragon-naamweigering + CPU-vendor-controle + SKU-weigering"
+      "guard": "Snapdragon name refusal + CPU vendor check + SKU refusal"
     },
     {
       "product": "Surface Laptop 5G for Business 7th Edition with Intel",
-      "reason": "apart product met apart driverpakket (id=108347); SF7 dekt de 5G-variant niet",
+      "reason": "separate product with a separate driver package (id=108347); SF7 does not cover the 5G variant",
       "downloadPage": "https://www.microsoft.com/en-us/download/details.aspx?id=108347",
-      "guard": "SKU _2119 staat op de refuselijst van SF7"
+      "guard": "SKU _2119 is on the SF7 refusal list"
     },
     {
       "product": "Surface Laptop 8th Edition (Snapdragon)",
-      "reason": "ARM/Snapdragon wordt nooit gedeployed; apart driverpakket",
+      "reason": "ARM/Snapdragon is never deployed; separate driver package",
       "downloadPage": "https://www.microsoft.com/en-us/download/details.aspx?id=108705",
-      "guard": "Snapdragon-naamweigering + CPU-vendor-controle + SKU-weigering"
+      "guard": "Snapdragon name refusal + CPU vendor check + SKU refusal"
     },
     {
-      "product": "alle overige Surface- en non-Surface-modellen",
-      "reason": "geen naam- en SKU-match in dit manifest",
-      "guard": "rode veilige stop vóór elke schrijfactie"
+      "product": "all other Surface and non-Surface models",
+      "reason": "no name and SKU match in this manifest",
+      "guard": "red safe stop before every write action"
     }
   ],
   "nextRefresh": {
@@ -312,12 +312,12 @@
       { "item": "SafeOS DU KB5125758 (2026-09-22)", "replaces": "KB5124015", "catalog": "https://www.catalog.update.microsoft.com/Search.aspx?q=KB5125758" }
     ],
     "evaluate": [
-      { "item": "Windows 11 26H2 (build 26300, GA 2026-09-29)", "consideration": "aparte image-track met eigen validatieronde; niet stilzwijgend overschakelen", "source": "https://learn.microsoft.com/en-us/windows/release-health/" },
-      { "item": "volgende stabiele LCU voor 25H2", "consideration": "verwacht rond 2026-10-13 ( Patch Tuesday B-release)", "source": "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information" }
+      { "item": "Windows 11 26H2 (build 26300, GA 2026-09-29)", "consideration": "separate image track with its own validation round; do not switch silently", "source": "https://learn.microsoft.com/en-us/windows/release-health/" },
+      { "item": "next stable LCU for 25H2", "consideration": "expected around 2026-10-13 ( Patch Tuesday B-release)", "source": "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information" }
     ],
     "watch": [
-      { "item": "Surface Laptop 4 driver/firmware-servicing eindigt 2027-04-15", "consideration": "vroegste EOL in de vloot; planning vereist" },
-      { "item": "Machine Identity Isolation / domeinvertrouwen-known issue (KB5124008+)", "consideration": "controleer domein-join/Autopilot-flow vóór gebruik van nieuwere media in een domeinomgeving", "source": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-11-25h2" }
+      { "item": "Surface Laptop 4 driver/firmware servicing ends 2027-04-15", "consideration": "earliest EOL in the fleet; planning required" },
+      { "item": "Machine Identity Isolation / domain trust known issue (KB5124008+)", "consideration": "check the domain join/Autopilot flow before using newer media in a domain environment", "source": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-11-25h2" }
     ]
   }
 }

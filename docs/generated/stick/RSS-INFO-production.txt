@@ -1,60 +1,60 @@
 ﻿RSS - Surface Deployment Stick
 Windows 11 Pro 25H2 x64 (build 26200.9457, KB5129195, 2026-09-14)
-Profielen: Surface Laptop 4 (AMD), Surface Laptop 5 (Intel, consumer + for Business), Surface Laptop 6 for Business (Intel), Surface Laptop for Business 7th Edition with Intel, Surface Laptop for Business 8th Edition with Intel (NIET Snapdragon/ARM)
-NIEUW: SF8 dekt uitsluitend de Intel Business-editie (SystemProductName 'Surface Laptop for Business 13.8in/15in 8th Ed Intel'); ARM/Snapdragon wordt veilig geweigerd.
-NIEUW: Stickdraagend manifest (sources.json) wordt door de deployment vóór het wissen gelezen; image- en driverhashes worden vóór de eerste schrijfactie gecontroleerd.
+Profiles: Surface Laptop 4 (AMD), Surface Laptop 5 (Intel, consumer + for Business), Surface Laptop 6 for Business (Intel), Surface Laptop for Business 7th Edition with Intel, Surface Laptop for Business 8th Edition with Intel (NOT Snapdragon/ARM)
+NEW: SF8 covers only the Intel Business edition (SystemProductName 'Surface Laptop for Business 13.8in/15in 8th Ed Intel'); ARM/Snapdragon is safely refused.
+NEW: The manifest carried on the stick (sources.json) is read by the deployment before the wipe; image and driver hashes are checked before the first write action.
 
-ADK WINPE-CONSTRUCTIE (bouwmoment 2026-09-23)
-- Gebouwd vanaf de officiele Microsoft Windows ADK 10.1.26100.9457 WinPE-bron.
-- Officiele WinPE-componenten: WinPE-WMI, WinPE-NetFX, WinPE-Scripting, WinPE-PowerShell, WinPE-StorageWMI, WinPE-DismCmdlets.
-- Scratchruimte: 512 MB.
-- Alle deploymentlogica staat in X:\Deploy\RSS-Deploy.ps1 + X:\Deploy\RSS-SafetyLib.ps1; wimlib 1.14.5 staat in X:\Tools.
+ADK WINPE CONSTRUCTION (build time 2026-09-23)
+- Built from the official Microsoft Windows ADK 10.1.26100.9457 WinPE source.
+- Official WinPE components: WinPE-WMI, WinPE-NetFX, WinPE-Scripting, WinPE-PowerShell, WinPE-StorageWMI, WinPE-DismCmdlets.
+- Scratch space: 512 MB.
+- All deployment logic lives in X:\Deploy\RSS-Deploy.ps1 + X:\Deploy\RSS-SafetyLib.ps1; wimlib 1.14.5 is in X:\Tools.
 
-AUTOMATISCHE WERKWIJZE
-- PowerShell detecteert de ondersteunde Surface-modellen en controleert naam, SystemSKU (allowlist uit sources.json) en CPU-vendor.
-- Snapdragon/ARM-namen, weiger-SKU's en CPU-afwijkingen worden expliciet geweigerd.
-- De RSS-datapartitie moet exact eenmaal worden gevonden (herkenningspaden: SF4- en SF8-install.esd).
-- Diskselectie: uitsluitend exact een interne NVMe-schijf op Disk 0; meerdere NVMe-schijven of USB op Disk 0 = veilige stop.
-- Image- en driverarchief-hash worden vóór de aftelling tegen het manifest gecontroleerd.
-- Na 15 seconden wordt Disk 0 automatisch gewist en als GPT ingedeeld (EFI 260 MB, MSR 16 MB, Windows NTFS).
+AUTOMATED OPERATION
+- PowerShell detects the supported Surface models and checks name, SystemSKU (allowlist from sources.json) and CPU vendor.
+- Snapdragon/ARM names, refusal-list SKUs and CPU deviations are explicitly refused.
+- The RSS data partition must be found exactly once (recognition paths: SF4 and SF8 install.esd).
+- Disk selection: exactly one internal NVMe disk on Disk 0; multiple NVMe disks or USB on Disk 0 = safe stop.
+- Image and driver archive hashes are checked against the manifest before the countdown.
+- After 15 seconds, Disk 0 is wiped automatically and partitioned as GPT (EFI 260 MB, MSR 16 MB, Windows NTFS).
 
 DEPLOYMENT
-1. ADK DISM past de modelspecifieke Windows 11 Pro image-index 1 toe met integriteitscontrole.
-2. Het gecomprimeerde driverarchief wordt met integriteitscontrole tijdelijk op de doel-NVMe uitgepakt.
-3. Het volledige Microsoft-pakket wordt exact op INF-aantal gecontroleerd en via Add-WindowsDriver offline geinjecteerd.
-4. BCDBoot maakt UEFI-opstartbestanden; bootmgfw.efi wordt gecontroleerd.
-5. Bij succes volgt automatische herstart; bij iedere fout blijft WinPE veilig staan met een leesbare fout en log.
+1. ADK DISM applies the model-specific Windows 11 Pro image index 1 with integrity checking.
+2. The compressed driver archive is extracted, with integrity checking, to a temporary location on the target NVMe.
+3. The full Microsoft package is checked against the exact INF count and injected offline via Add-WindowsDriver.
+4. BCDBoot creates the UEFI boot files; bootmgfw.efi is verified.
+5. On success the device reboots automatically; on any error WinPE stays safely on screen with a readable error and log.
 
-MODELROUTING (INF-aantallen uit config/sources.json)
-- SF4: <Images>:\RSSSetup\SF4 + <Images>:\RSSDriverArchives\SF4.esd, volledig pakket met exact 78 INF.
-- SF5: <Images>:\RSSSetup\SF5 + <Images>:\RSSDriverArchives\SF5.esd, volledig pakket met exact 112 INF.
-- SF6: <Images>:\RSSSetup\SF6 + <Images>:\RSSDriverArchives\SF6.esd, volledig pakket met exact 116 INF.
-- SF7: <Images>:\RSSSetup\SF7 + <Images>:\RSSDriverArchives\SF7.esd, volledig pakket met exact 119 INF.
-- SF8: <Images>:\RSSSetup\SF8 + <Images>:\RSSDriverArchives\SF8.esd, volledig pakket met exact 120 INF.
+MODEL ROUTING (INF counts from config/sources.json)
+- SF4: <Images>:\RSSSetup\SF4 + <Images>:\RSSDriverArchives\SF4.esd, full package with exactly 78 INF files.
+- SF5: <Images>:\RSSSetup\SF5 + <Images>:\RSSDriverArchives\SF5.esd, full package with exactly 112 INF files.
+- SF6: <Images>:\RSSSetup\SF6 + <Images>:\RSSDriverArchives\SF6.esd, full package with exactly 116 INF files.
+- SF7: <Images>:\RSSSetup\SF7 + <Images>:\RSSDriverArchives\SF7.esd, full package with exactly 119 INF files.
+- SF8: <Images>:\RSSSetup\SF8 + <Images>:\RSSDriverArchives\SF8.esd, full package with exactly 120 INF files.
 
 LOG
-- <Images>:\RSS-ADK-Deploy.log bevat manifest-versie, model, SKU, CPU, fysieke disks, hashcontroles, alle DISM-uitvoer, DriverStore-aantallen en het eindresultaat.
+- <Images>:\RSS-ADK-Deploy.log contains the manifest version, model, SKU, CPU, physical disks, hash checks, all DISM output, DriverStore counts and the final result.
 
-OFFICIELE MICROSOFT-PAKKETTEN (in deze release)
+OFFICIAL MICROSOFT PACKAGES (in this release)
 - SF4: SurfaceLaptop4_AMD_Win11_22631_26.072.27963.0.msi (2026-08-14); 78 INF; archief SHA-256 4DC1160F8E083ADB892F87BA737A5D86F0D57A2462F3E20397C2D703D86E95E4
 - SF5: SurfaceLaptop5_Win11_22631_26.084.43979.0.msi (2026-09-22); 112 INF; archief SHA-256 CCE6F530B284ED88BBBF5D1944720340DA6BAC9820FB5614897FF8ECC7279102
 - SF6: SurfaceLaptop6forBusiness_Win11_22631_26.082.26400.0.msi (2026-09-22); 116 INF; archief SHA-256 AD22E0B052C7574F5BA350A05BDCA6990FCFC6604D84A85519DAB9116CD8B05D
 - SF7: SurfaceLaptop7withIntel_Win11_22631_26.081.15509.0.msi (2026-09-22); 119 INF; archief SHA-256 D0AAD5C432CC095B309187BCED2277D33FC7C6F49E507E0D2F1B464294413C4B
 - SF8: SurfaceLaptop8withIntel_Win11_26100_26.083.37379.0.msi (2026-09-11); 120 INF; archief SHA-256 F149B6533373597AE16BF6107354DEF15ECAC7D952948F0C2A465F8485DB5FDE
-- Alle MSI-handtekeningen zijn geldig en van Microsoft Corporation (Authenticode).
-- Alle archieven zijn volledig geverifieerd en proefuitgepakt met exact het verwachte INF-aantal.
+- All MSI signatures are valid and from Microsoft Corporation (Authenticode).
+- All archives have been fully verified and test-extracted with exactly the expected INF count.
 
-WINDOWS 11 BRON
-- Officiele UUP-set 'Windows 11, version 25H2 (26200.9457)' amd64, Nederlands (nl-NL), Professional.
-- Geintegreerd tijdens de convert: checkpoint KB5043080, LCU KB5129195, SSU KB5124007, SafeOS DU KB5124015 (WinRE), .NET CU KB5126052.
-- KB5124010 (26200.9550) is een preview-update en is bewust NIET gebruikt.
-- Installatietaal: Nederlands (nl-NL); de installatie blijft volledig offline en MDM/Autopilot-geschikt.
+WINDOWS 11 SOURCE
+- Official UUP set 'Windows 11, version 25H2 (26200.9457)' amd64, Nederlands (nl-NL), Professional.
+- Integrated during the convert: checkpoint KB5043080, LCU KB5129195, SSU KB5124007, SafeOS DU KB5124015 (WinRE), .NET CU KB5126052.
+- KB5124010 (26200.9550) is a preview update and was deliberately NOT used.
+- Install language: Nederlands (nl-NL); the installation remains fully offline and MDM/Autopilot-ready.
 
-ACTIEVE ADK WINPE BOOT-WIM
+ACTIVE ADK WINPE BOOT WIM
 SHA-256: 797CCD813A1A9A375CFF22EDD4145600EFCA2F0B4FD20482F866C3B8ECEA0563
 
 RELEASE
-- Projectversie: 2.0.0 - productietag: rss-2026-09-sf8 (2026-09-24)
-- Fysieke validatie: media validated; fysiek gevalideerd op SF6 (veldtest 2026-09); overige modellen NOT PHYSICALLY VALIDATED
+- Project version: 2.0.0 - production tag: rss-2026-09-sf8 (2026-09-24)
+- Physical validation: media validated; physically validated on SF6 (field test 2026-09); other models NOT PHYSICALLY VALIDATED
 
-BIJGEWOON: 2026-09-23
+ATTACHED: 2026-09-23

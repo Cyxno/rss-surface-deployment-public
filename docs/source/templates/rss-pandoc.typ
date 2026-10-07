@@ -1,11 +1,11 @@
-// RSS-pandoc-Typst-template — zakelijke, rustige enterprise-stijl.
-// Gebruikt door tools/Build-Documentation.ps1; variabelen komen uit de
-// YAML-metadata van de canonical Markdown-bronnen.
+// RSS-pandoc-Typst template — businesslike, restrained enterprise style.
+// Used by tools/Build-Documentation.ps1; variables come from the
+// YAML metadata of the canonical Markdown sources.
 
-#let accent = rgb("#0F4761")          // rustig donkerblauw (koppen, kaders) — zelfde als DOCX-reference-thema
-#let accent-light = rgb("#E8F0F7")    // codeachtergrond
-#let warn-bg = rgb("#FBF1E6")         // callout-achtergrond
-#let warn-edge = rgb("#C57A2B")       // callout-rand (amber)
+#let accent = rgb("#0F4761")          // calm dark blue (headings, frames) — same as the DOCX reference theme
+#let accent-light = rgb("#E8F0F7")    // code background
+#let warn-bg = rgb("#FBF1E6")         // callout background
+#let warn-edge = rgb("#C57A2B")       // callout border (amber)
 #let text-gray = rgb("#333333")
 #let rule-gray = rgb("#C8D2DC")
 
@@ -29,13 +29,13 @@
     v(2pt)
     grid(columns: (1fr, auto, 1fr),
       align(left, [$title-short$]),
-      align(center, [Pagina #context counter(page).display() van #counter(page).final().first()]),
+      align(center, [Page #context counter(page).display() of #counter(page).final().first()]),
       align(right, [$classification$]),
     )
   },
 )
 
-#set text(font: "DejaVu Sans", size: 9.5pt, fill: text-gray, lang: "nl", hyphenate: true)
+#set text(font: "DejaVu Sans", size: 9.5pt, fill: text-gray, lang: "en", hyphenate: true)
 #set par(justify: true, leading: 0.62em)
 
 #show heading.where(level: 1): it => {
@@ -70,7 +70,7 @@
   text(font: "DejaVu Sans Mono", size: 8.6pt, fill: rgb("#204A6B"), it),
 )
 
-// pandoc zet blockquotes om in #quote[...]: stijl als WARN/NOTE-callout
+// pandoc converts blockquotes into #quote[...]: styled as a WARN/NOTE callout
 #show quote: it => block(
   fill: warn-bg,
   stroke: (left: 2.5pt + warn-edge),
@@ -85,7 +85,7 @@
   set text(size: 8.6pt)
   it
 }
-// grote tabellen mogen over paginagrenzen breken
+// large tables may break across page boundaries
 #show figure: set block(breakable: true)
 #set table(
   stroke: 0.5pt + rule-gray,
@@ -95,14 +95,14 @@
 
 #set document(title: "$title$", author: "$audience$")
 
-// ------------------------------------------------------------- voorpagina
+// ------------------------------------------------------------- title page
 #align(center)[
   #v(4.2cm)
   #text(size: 24pt, fill: accent, weight: "bold")[$title$]
   #v(6pt)
   #text(size: 12pt, fill: text-gray)[$subtitle$]
   #v(4pt)
-  #text(size: 9pt, fill: text-gray)[RSS — Surface Deployment Stick · Windows 11-deployment voor Surface Laptop]
+  #text(size: 9pt, fill: text-gray)[RSS — Surface Deployment Stick · Windows 11 deployment for Surface Laptop]
   #v(2.6cm)
   #table(
     columns: (auto, auto),
@@ -110,21 +110,21 @@
     inset: (x: 14pt, y: 5pt),
     stroke: none,
     fill: none,
-    text(weight: "bold")[Documentversie], [$version$],
-    text(weight: "bold")[Datum], [$docdate$],
-    text(weight: "bold")[Doelgroep], [$audience$],
-    text(weight: "bold")[Classificatie], [$classification$],
-    text(weight: "bold")[Gegenereerd uit], [docs/source/ + config/sources.json],
+    text(weight: "bold")[Document version], [$version$],
+    text(weight: "bold")[Date], [$docdate$],
+    text(weight: "bold")[Audience], [$audience$],
+    text(weight: "bold")[Classification], [$classification$],
+    text(weight: "bold")[Generated from], [docs/source/ + config/sources.json],
   )
   #v(4pt)
   #line(length: 58%, stroke: 1pt + accent)
   #v(2.4cm)
-  #text(size: 8.5pt, fill: text-gray)[Source-available beheerdocument — geen opensourcelicentie. #linebreak() Deze PDF is gegenereerd; wijzig de bron in docs/source en herbouw met tools/Build-Documentation.ps1.]
+  #text(size: 8.5pt, fill: text-gray)[Source-available administration document — no open-source license. #linebreak() This PDF is generated; change the source in docs/source and rebuild with tools/Build-Documentation.ps1.]
 ]
 #pagebreak()
 
-// --------------------------------------------------------- inhoudsopgave
-#outline(title: [Inhoudsopgave], depth: 2, indent: 1em)
+// --------------------------------------------------------- table of contents
+#outline(title: [Contents], depth: 2, indent: 1em)
 #pagebreak()
 
 // ------------------------------------------------------------------ body

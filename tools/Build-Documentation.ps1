@@ -1,22 +1,22 @@
 ﻿<#
 .SYNOPSIS
-    Genereert alle documentatie vanuit de canonical bronnen.
+    Generates all documentation from the canonical sources.
 
 .DESCRIPTION
-    Enige toegestane toegangspunt voor documentoutput. Alles leidt af uit:
-      - docs/source/**            (canonical Markdown + sticktemplates + Typst-sjabloon)
-      - config/sources.json       (canonical waarden: versies, modellen, SKU's, hashes, INF)
+    The only permitted entry point for documentation output. Everything is derived from:
+      - docs/source/**            (canonical Markdown + stick templates + Typst template)
+      - config/sources.json       (canonical values: versions, models, SKUs, hashes, INF)
 
     Outputs:
-      - docs/generated/stick/RSS-INFO-production.txt en LEESMIJ-AUTOINSTALL.txt
-        (komen via Update-RSSMedia.ps1 op de stick)
-      - docs/generated/RSS_Technische_bouw_en_beheerhandleiding.docx/.pdf
-      - docs/generated/RSS_Operationele_handleiding.docx/.pdf
-      - docs/generated/RSS_Test_en_releaseprocedure.docx/.pdf
+      - docs/generated/stick/RSS-INFO-production.txt and README-AUTOINSTALL.txt
+        (placed on the stick via Update-RSSMedia.ps1)
+      - docs/generated/RSS_Technical_Build_and_Management_Manual.docx/.pdf
+      - docs/generated/RSS_Operations_Manual.docx/.pdf
+      - docs/generated/RSS_Test_and_Release_Procedure.docx/.pdf
 
-    Vereisten: pandoc >= 3.6 (https://pandoc.org/installing.html), Typst >= 0.15
-    (https://typst.app), Windows of Linux. Padinstelling via $env:PANDOC en
-    $env:TYPST of in PATH. -StickDocsOnly werkt zonder die tools.
+    Requirements: pandoc >= 3.6 (https://pandoc.org/installing.html), Typst >= 0.15
+    (https://typst.app), Windows or Linux. Set the paths via $env:PANDOC and
+    $env:TYPST or via PATH. -StickDocsOnly works without those tools.
 
 .EXAMPLE
     .\tools\Build-Documentation.ps1
@@ -38,16 +38,16 @@ $work = Join-Path ([System.IO.Path]::GetTempPath()) ('rss-docbuild-' + [guid]::N
 New-Item -ItemType Directory -Force -Path $work, $generatedRoot, (Join-Path $generatedRoot 'stick') | Out-Null
 
 $documents = @(
-    @{ Md = 'handleiding\RSS_Technische_bouw_en_beheerhandleiding.md'; Name = 'RSS_Technische_bouw_en_beheerhandleiding' },
-    @{ Md = 'operationeel\RSS_Operationele_handleiding.md'; Name = 'RSS_Operationele_handleiding' },
-    @{ Md = 'procedure\RSS_Test_en_releaseprocedure.md'; Name = 'RSS_Test_en_releaseprocedure' }
+    @{ Md = 'manual\RSS_Technical_Build_and_Management_Manual.md'; Name = 'RSS_Technical_Build_and_Management_Manual' },
+    @{ Md = 'operations\RSS_Operations_Manual.md'; Name = 'RSS_Operations_Manual' },
+    @{ Md = 'procedure\RSS_Test_and_Release_Procedure.md'; Name = 'RSS_Test_and_Release_Procedure' }
 )
 
 # --------------------------------------------------------------- manifest
 $mst = Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
 
 function Resolve-ManifestPath([string]$Path) {
-    # loopt {{a.b.c}}-paden door het manifestobject; numerieke segmenten indexeren arrays
+    # walks {{a.b.c}} paths through the manifest object; numeric segments index arrays
     $value = $mst
     foreach ($segment in $Path.Split('.')) {
         $prop = $value.PSObject.Properties[$segment]
@@ -55,12 +55,12 @@ function Resolve-ManifestPath([string]$Path) {
             $value = $prop.Value
         } elseif ($segment -match '^\d+$') {
             $list = @($value)
-            if ([int]$segment -ge $list.Count) { throw "manifestpad bestaat niet: $Path" }
+            if ([int]$segment -ge $list.Count) { throw "manifest path does not exist: $Path" }
             $value = $list[[int]$segment]
         } else {
-            throw "manifestpad bestaat niet: $Path"
+            throw "manifest path does not exist: $Path"
         }
-        if ($null -eq $value) { throw "manifestpad bestaat niet: $Path" }
+        if ($null -eq $value) { throw "manifest path does not exist: $Path" }
     }
     return $value
 }
@@ -68,7 +68,7 @@ function Resolve-ManifestPath([string]$Path) {
 function Get-ModelTable {
     $rows = foreach ($pack in $mst.surfaceDriverPacks) {
         $status = $pack.physicalValidation.status
-        $statusText = if ($status -eq 'PHYSICALLY VALIDATED') { "fysiek gevalideerd ($($pack.physicalValidation.date))" } else { "**NOT PHYSICALLY VALIDATED**" }
+        $statusText = if ($status -eq 'PHYSICALLY VALIDATED') { "physically validated ($($pack.physicalValidation.date))" } else { "**NOT PHYSICALLY VALIDATED**" }
         "| $($pack.profile) | $($pack.product) | $($pack.cpuVendor) | $($pack.infCount) | $statusText |"
     }
     return @($rows) -join "`n"
@@ -96,7 +96,7 @@ function Get-SafetyTable {
 
 function Get-RoutingTable {
     $rows = foreach ($pack in $mst.surfaceDriverPacks) {
-        "- $($pack.profile): <Images>:\RSSSetup\$($pack.profile) + <Images>:\RSSDriverArchives\$($pack.profile).esd, volledig pakket met exact $($pack.infCount) INF."
+        "- $($pack.profile): <Images>:\RSSSetup\$($pack.profile) + <Images>:\RSSDriverArchives\$($pack.profile).esd, full package with exactly $($pack.infCount) INF files."
     }
     return @($rows) -join "`n"
 }
@@ -109,9 +109,9 @@ function Get-PacksTable {
 }
 
 function Add-TableSoftBreaks([string]$Text) {
-    # Voegt zero-width spaces toe na map- en naamtekens in code-spans binnen
-    # tabelrijen, zodat lange tokens (MSI-namen, SKU's, paden) netjes omlopen
-    # in smalle tabelkolommen zonder de cel te overschrijden.
+    # Adds zero-width spaces after path and name characters inside code spans in
+    # table rows, so long tokens (MSI names, SKUs, paths) wrap neatly in narrow
+    # table columns without overflowing the cell.
     $zwsp = [char]0x200B
     $lines = $Text -split "`n", 0, 'SimpleMatch'
     for ($i = 0; $i -lt $lines.Count; $i++) {
@@ -136,7 +136,7 @@ function Expand-Tokens([string]$Text) {
     $text = $text -replace '\{\{TABLE:INFSLINE\}\}', ((@($mst.surfaceDriverPacks) | ForEach-Object { "$($_.profile) $($_.infCount)" }) -join ', ')
     $text = $text -replace '\{\{TABLE:PROFILELINE\}\}', ((@($mst.surfaceDriverPacks) | ForEach-Object product) -join ', ')
 
-    # {{a.b.c}}-paden uit het manifest (herhaal tot stabiel voor geneste tokens)
+    # {{a.b.c}} paths from the manifest (repeat until stable, for nested tokens)
     for ($i = 0; $i -lt 5; $i++) {
         $before = $text
         $text = [regex]::Replace($text, '\{\{([A-Za-z0-9_.]+)\}\}', {
@@ -144,29 +144,29 @@ function Expand-Tokens([string]$Text) {
             $path = $match.Groups[1].Value
             if ($path -like 'TABLE:*') { return $match.Value }
             $v = Resolve-ManifestPath $path
-            if ($v -is [bool]) { if ($v) { 'ja' } else { 'nee' } } else { "$v" }
+            if ($v -is [bool]) { if ($v) { 'yes' } else { 'no' } } else { "$v" }
         })
         if ($text -eq $before) { break }
     }
     if ($text -match '\{\{') {
-        throw "onopgeloste tokens in documentatie: $(([regex]::Matches($text, '\{\{[^}]+\}\}') | Select-Object -First 5 -ExpandProperty Value) -join ', ')"
+        throw "unresolved tokens in documentation: $(([regex]::Matches($text, '\{\{[^}]+\}\}') | Select-Object -First 5 -ExpandProperty Value) -join ', ')"
     }
     return Add-TableSoftBreaks $text
 }
 
 # ------------------------------------------------------------ stickdocs
 $stickInfo = Expand-Tokens (Get-Content (Join-Path $sourceRoot 'stick\RSS-INFO-production.template.txt') -Raw -Encoding UTF8)
-$stickReadme = Expand-Tokens (Get-Content (Join-Path $sourceRoot 'stick\LEESMIJ-AUTOINSTALL.template.txt') -Raw -Encoding UTF8)
+$stickReadme = Expand-Tokens (Get-Content (Join-Path $sourceRoot 'stick\README-AUTOINSTALL.template.txt') -Raw -Encoding UTF8)
 [System.IO.File]::WriteAllText((Join-Path $generatedRoot 'stick\RSS-INFO-production.txt'), ($stickInfo -replace "`r?`n", "`r`n"), [System.Text.UTF8Encoding]::new($true))
-[System.IO.File]::WriteAllText((Join-Path $generatedRoot 'stick\LEESMIJ-AUTOINSTALL.txt'), ($stickReadme -replace "`r?`n", "`r`n"), [System.Text.UTF8Encoding]::new($true))
-Write-Host "[ok] stickdocumentatie gegenereerd" -ForegroundColor Green
+[System.IO.File]::WriteAllText((Join-Path $generatedRoot 'stick\README-AUTOINSTALL.txt'), ($stickReadme -replace "`r?`n", "`r`n"), [System.Text.UTF8Encoding]::new($true))
+Write-Host "[ok] stick documentation generated" -ForegroundColor Green
 
-# ------------------------------------------------------- README-blok
+# ------------------------------------------------------- README block
 function Update-ReadmeGeneratedBlock {
-    # vist de verstreken driverdatum per profiel op uit de releaseDatum-velden
+    # picks out the elapsed driver date per profile from the release date fields
     $rows = foreach ($pack in $mst.surfaceDriverPacks) {
         $status = if ($pack.physicalValidation.status -eq 'PHYSICALLY VALIDATED') {
-            "✅ fysiek gevalideerd ($($pack.physicalValidation.date))"
+            "✅ physically validated ($($pack.physicalValidation.date))"
         } else {
             "❌ **NOT PHYSICALLY VALIDATED**"
         }
@@ -174,19 +174,19 @@ function Update-ReadmeGeneratedBlock {
         "| $($pack.profile) | $($pack.product) | $platform | $($pack.releaseDate) | $($pack.infCount) | $status |"
     }
     $bootHash = $mst.media.bootWimSha256
-    $medium = "**Productiemedium:** Windows 11 Pro $($mst.windows.version), build $($mst.windows.build) (LCU $($mst.windows.cumulativeUpdate.kb), $($mst.windows.cumulativeUpdate.released)), $($mst.windows.language) · ADK $($mst.adk.version) · wimlib $($mst.wimlib.version) · boot.wim SHA-256 ``$($bootHash.Substring(0,7))…$($bootHash.Substring(56))``"
+    $medium = "**Production medium:** Windows 11 Pro $($mst.windows.version), build $($mst.windows.build) (LCU $($mst.windows.cumulativeUpdate.kb), $($mst.windows.cumulativeUpdate.released)), $($mst.windows.language) · ADK $($mst.adk.version) · wimlib $($mst.wimlib.version) · boot.wim SHA-256 ``$($bootHash.Substring(0,7))…$($bootHash.Substring(56))``"
     $block = @(
-        '| Profiel | Model | Platform | Driverpakket van | INF | Fysieke status |',
+        '| Profile | Model | Platform | Driver package from | INF | Physical status |',
         '|---|---|---|---|---|---|'
     ) + @($rows) + @('', $medium)
     $readmePath = Join-Path $repo 'README.md'
     $readme = Get-Content -LiteralPath $readmePath -Raw -Encoding UTF8
     $pattern = '(?s)(<!-- BEGIN GENERATED:sources[^>]*-->).*(<!-- EIND GENERATED:sources -->)'
-    if ($readme -notmatch $pattern) { throw 'README mist het GENERATED:sources-blok' }
+    if ($readme -notmatch $pattern) { throw 'README is missing the GENERATED:sources block' }
     $replacement = '$1' + "`n" + ($block -join "`n") + "`n" + '$2'
     $readme = [regex]::new($pattern).Replace($readme, $replacement, 1)
     [System.IO.File]::WriteAllText($readmePath, $readme, [System.Text.UTF8Encoding]::new($false))
-    Write-Host "[ok] README-versieblok ververst" -ForegroundColor Green
+    Write-Host "[ok] README version block refreshed" -ForegroundColor Green
 }
 Update-ReadmeGeneratedBlock
 
@@ -195,30 +195,30 @@ if ($StickDocsOnly) {
     return
 }
 
-# ---------------------------------------------------------- tools vinden
-$pandoc = if ($env:PANDOC) { $env:PANDOC } elseif (Get-Command pandoc -ErrorAction SilentlyContinue) { (Get-Command pandoc).Source } else { throw 'pandoc niet gevonden (installeer pandoc >= 3.6 of zet $env:PANDOC)' }
-$typst = if ($env:TYPST) { $env:TYPST } elseif (Get-Command typst -ErrorAction SilentlyContinue) { (Get-Command typst).Source } else { throw 'typst niet gevonden (installeer Typst >= 0.15 of zet $env:TYPST)' }
+# ---------------------------------------------------------- locate tools
+$pandoc = if ($env:PANDOC) { $env:PANDOC } elseif (Get-Command pandoc -ErrorAction SilentlyContinue) { (Get-Command pandoc).Source } else { throw 'pandoc not found (install pandoc >= 3.6 or set $env:PANDOC)' }
+$typst = if ($env:TYPST) { $env:TYPST } elseif (Get-Command typst -ErrorAction SilentlyContinue) { (Get-Command typst).Source } else { throw 'typst not found (install Typst >= 0.15 or set $env:TYPST)' }
 Write-Host "pandoc: $pandoc"
 Write-Host "typst : $typst"
 
 function Get-MetadataValue([string]$MarkdownPath, [string]$Key) {
-    # leest een eenvoudige `key: "value"`-regel uit de YAML-frontmatter
+    # reads a simple `key: "value"` line from the YAML frontmatter
     foreach ($line in (Get-Content -LiteralPath $MarkdownPath -TotalCount 12 -Encoding UTF8)) {
         if ($line -match "^\s*$Key\s*:\s*`"([^`"]+)`"") { return $Matches[1] }
         if ($line -match "^\s*$Key\s*:\s*([^#\r\n]+)") { return $Matches[1].Trim() }
     }
-    throw "metadata '$Key' ontbreekt in $MarkdownPath"
+    throw "metadata '$Key' missing in $MarkdownPath"
 }
 
 function Add-RSSDocxHeaderFooter([string]$Path, [string]$Title) {
-    # Voegt koptekst (documenttitel) en voettekst (Pagina X van Y) toe aan het
-    # door pandoc gegenereerde DOCX; voorpagina (eerste pagina) blijft schoon.
+    # Adds a header (document title) and footer (Page X of Y) to the DOCX
+    # generated by pandoc; the title page (first page) stays clean.
     Add-Type -AssemblyName System.IO.Compression
     Add-Type -AssemblyName System.IO.Compression.FileSystem
 
     function Read-ZipEntryText([System.IO.Compression.ZipArchive]$Zip, [string]$EntryName) {
         $entry = $Zip.GetEntry($EntryName)
-        if (-not $entry) { throw "zip-entry ontbreekt: $EntryName" }
+        if (-not $entry) { throw "zip entry missing: $EntryName" }
         $reader = New-Object System.IO.StreamReader($entry.Open(), [System.Text.Encoding]::UTF8)
         try { return $reader.ReadToEnd() } finally { $reader.Dispose() }
     }
@@ -240,7 +240,7 @@ function Add-RSSDocxHeaderFooter([string]$Path, [string]$Title) {
 '@
         $footerXml = @'
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p><w:pPr><w:pStyle w:val="Footer"/><w:tabs><w:tab w:val="center" w:pos="4950"/></w:tabs></w:pPr><w:r><w:rPr><w:color w:val="595959"/><w:sz w:val="16"/></w:rPr><w:t xml:space="preserve">RSS - intern beheerdocument</w:t></w:r><w:r><w:tab/></w:r><w:r><w:rPr><w:color w:val="595959"/><w:sz w:val="16"/></w:rPr><w:t xml:space="preserve">Pagina </w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> PAGE </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:color w:val="595959"/><w:sz w:val="16"/></w:rPr><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:rPr><w:color w:val="595959"/><w:sz w:val="16"/></w:rPr><w:t xml:space="preserve"> van </w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> NUMPAGES </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:color w:val="595959"/><w:sz w:val="16"/></w:rPr><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r></w:p></w:ftr>
+<w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p><w:pPr><w:pStyle w:val="Footer"/><w:tabs><w:tab w:val="center" w:pos="4950"/></w:tabs></w:pPr><w:r><w:rPr><w:color w:val="595959"/><w:sz w:val="16"/></w:rPr><w:t xml:space="preserve">RSS - administration document</w:t></w:r><w:r><w:tab/></w:r><w:r><w:rPr><w:color w:val="595959"/><w:sz w:val="16"/></w:rPr><w:t xml:space="preserve">Page </w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> PAGE </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:color w:val="595959"/><w:sz w:val="16"/></w:rPr><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:rPr><w:color w:val="595959"/><w:sz w:val="16"/></w:rPr><w:t xml:space="preserve"> of </w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> NUMPAGES </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:color w:val="595959"/><w:sz w:val="16"/></w:rPr><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r></w:p></w:ftr>
 '@
         $headerXml = $headerXml.Replace('TITLEPLACEHOLDER', (& $escape $Title))
 
@@ -258,17 +258,17 @@ function Add-RSSDocxHeaderFooter([string]$Path, [string]$Title) {
             '<Relationship Id="rIdHdrRSS" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/header" Target="header1.xml"/><Relationship Id="rIdFtrRSS" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/></Relationships>')
         Write-ZipEntryText $zip 'word/_rels/document.xml.rels' $relsText
 
-        # 3. header- en footeronderdelen
+        # 3. header and footer parts
         Write-ZipEntryText $zip 'word/header1.xml' $headerXml
         Write-ZipEntryText $zip 'word/footer1.xml' $footerXml
 
-        # 4. sectPr: verwijzingen + titlePg (schone voorpagina)
+        # 4. sectPr: references + titlePg (clean title page)
         $docText = Read-ZipEntryText $zip 'word/document.xml'
         if ($docText -notmatch 'rIdHdrRSS') {
             $refs = '<w:headerReference w:type="default" r:id="rIdHdrRSS"/><w:footerReference w:type="default" r:id="rIdFtrRSS"/><w:titlePg/>'
             $regex = [regex]'<w:sectPr(\s[^>]*)?>'
             $match = $regex.Match($docText)
-            if (-not $match.Success) { throw 'geen sectPr in document.xml gevonden' }
+            if (-not $match.Success) { throw 'no sectPr found in document.xml' }
             $docText = $docText.Remove($match.Index, $match.Length).Insert($match.Index, "<w:sectPr$($match.Groups[1].Value)>$refs")
             Write-ZipEntryText $zip 'word/document.xml' $docText
         }
@@ -293,7 +293,7 @@ foreach ($doc in $documents) {
         --toc --toc-depth=2 `
         @refArgs `
         -o $docxOut
-    if ($LASTEXITCODE -ne 0) { throw "pandoc DOCX faalde voor $($doc.Name)" }
+    if ($LASTEXITCODE -ne 0) { throw "pandoc DOCX failed for $($doc.Name)" }
     Add-RSSDocxHeaderFooter -Path $docxOut -Title ((Expand-Tokens (Get-MetadataValue $workMd 'title')))
 
     Write-Host "  PDF  $($doc.Name)..."
@@ -306,12 +306,12 @@ foreach ($doc in $documents) {
         -V title-short=$($doc.Name) `
         -V subtitle-short=$($mst.project.internalName) `
         -o $typOut
-    if ($LASTEXITCODE -ne 0) { throw "pandoc typst faalde voor $($doc.Name)" }
+    if ($LASTEXITCODE -ne 0) { throw "pandoc typst failed for $($doc.Name)" }
     $pdfOut = Join-Path $generatedRoot ($doc.Name + '.pdf')
     & $typst compile --root / $typOut $pdfOut
-    if ($LASTEXITCODE -ne 0) { throw "typst compile faalde voor $($doc.Name)" }
+    if ($LASTEXITCODE -ne 0) { throw "typst compile failed for $($doc.Name)" }
     Write-Host "[ok] $($doc.Name).docx + .pdf" -ForegroundColor Green
 }
 
 Remove-Item -LiteralPath $work -Recurse -Force -ErrorAction SilentlyContinue
-Write-Host 'DOCUMENTATIE-BUILD VOLTOOID' -ForegroundColor Green
+Write-Host 'DOCUMENTATION BUILD COMPLETE' -ForegroundColor Green

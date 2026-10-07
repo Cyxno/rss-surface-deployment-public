@@ -1,15 +1,15 @@
 ﻿# =============================================================================
-# RSS OOBE-diagnose - draaien in de FALLENDE OOBE via Shift+F10:
-#   wpeutil UpdateBootInfo (negeer fout) - niet nodig; direct:
+# RSS OOBE diagnostics - run inside the FAILING OOBE via Shift+F10:
+#   wpeutil UpdateBootInfo (ignore error) - not needed; directly:
 #   powershell -NoProfile -ExecutionPolicy Bypass -File <drive>:\OOBE-Diag\Collect-RSSOOBEDiag.ps1
-# Read-only. Verzamelt alles naar <stick>:\OOBE-Diag\<machinenaam>\
+# Read-only. Collects everything into <stick>:\OOBE-Diag\<machinename>\
 # =============================================================================
 $ErrorActionPreference = 'Continue'
 $ProgressPreference = 'SilentlyContinue'
 $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $comp = $env:COMPUTERNAME
 
-# vind een schrijfbare doelmap op de stick (zoek OOBE-Diag of Images-label)
+# find a writable target directory on the stick (look for OOBE-Diag or the Images label)
 $targets = @()
 foreach ($d in (Get-PSDrive -PSProvider FileSystem | Where-Object DriveLetter)) {
     $root = "$($d.Root)"
@@ -19,14 +19,14 @@ foreach ($d in (Get-PSDrive -PSProvider FileSystem | Where-Object DriveLetter)) 
 if (-not $targets) { $targets = @("$env:SystemDrive\RSS-OOBE-Diag") }
 $out = Join-Path $targets[0] "$comp-$stamp"
 New-Item -ItemType Directory -Force -Path $out | Out-Null
-Write-Host "Diagnose-output: $out" -ForegroundColor Cyan
+Write-Host "Diagnostics output: $out" -ForegroundColor Cyan
 
 function Save([string]$Name, [scriptblock]$SB) {
     try {
         $r = & $SB 2>&1 | Out-String
         "$r" | Set-Content -LiteralPath (Join-Path $out $Name) -Encoding UTF8
         Write-Host "  [ok] $Name"
-    } catch { "FOUT: $($_.Exception.Message)" | Set-Content (Join-Path $out $Name); Write-Host "  [fout] $Name" }
+    } catch { "ERROR: $($_.Exception.Message)" | Set-Content (Join-Path $out $Name); Write-Host "  [error] $Name" }
 }
 
 Save '01-netconnectionprofile.txt' { Get-NetConnectionProfile | Format-List * | Out-String }
@@ -47,7 +47,7 @@ Save '06-oobe-endpoints.txt' {
     foreach ($ep in 'login.live.com','device.login.microsoftonline.com','sls.update.microsoft.com','config.api.microsoft.com','settings-win.data.microsoft.com','www.microsoft.com') {
         "=== $ep ==="
         try { $r = Invoke-WebRequest -Uri "https://$ep/" -UseBasicParsing -TimeoutSec 10; "HTTP $($r.StatusCode)" }
-        catch { "FOUT: $($_.Exception.Message)" }
+        catch { "ERROR: $($_.Exception.Message)" }
     }
 }
 Save '07-services.txt' {
@@ -78,11 +78,11 @@ Save '13-netsh-show.txt' {
     netsh wlan show profiles
 }
 Save '14-time-tls.txt' {
-    "tijd: $(Get-Date -Format o) (UTC: $((Get-Date).ToUniversalTime().ToString('o')))"
+    "time: $(Get-Date -Format o) (UTC: $((Get-Date).ToUniversalTime().ToString('o')))"
     "TLS: $([Net.ServicePointManager]::SecurityProtocol)"
     w32tm /query /status 2>&1 | Out-String
 }
-# Panther/OOBE-logbestanden kopiëren
+# Copy Panther/OOBE log files
 $logDirs = 'C:\Windows\Panther', 'C:\Windows\OOBE\Logs', 'C:\Windows\Logs\MoSetup'
 foreach ($ld in $logDirs) {
     if (Test-Path $ld) {
@@ -91,4 +91,4 @@ foreach ($ld in $logDirs) {
     }
 }
 Write-Host ""
-Write-Host "KLAAR. Kopieer deze map: $out" -ForegroundColor Green
+Write-Host "DONE. Copy this directory: $out" -ForegroundColor Green

@@ -40,7 +40,7 @@ try {
     Copy-Item -LiteralPath (Join-Path $build 'startnet.cmd') -Destination (Join-Path $mount 'Windows\System32\startnet.cmd') -Force
     foreach ($tool in 'wimlib-imagex.exe','libwim-15.dll') {
         $toolSource = Join-Path $build $tool
-        if (-not (Test-Path -LiteralPath $toolSource)) { throw "wimlib-onderdeel ontbreekt naast Build-WinPE.ps1: $tool" }
+        if (-not (Test-Path -LiteralPath $toolSource)) { throw "wimlib component missing next to Build-WinPE.ps1: $tool" }
         Copy-Item -LiteralPath $toolSource -Destination (Join-Path $mount "Tools\$tool") -Force
     }
 
@@ -55,7 +55,7 @@ try {
         'Tools\libwim-15.dll'
     )
     foreach ($relativePath in $required) {
-        if (-not (Test-Path -LiteralPath (Join-Path $mount $relativePath))) { throw "Ontbreekt in WIM: $relativePath" }
+        if (-not (Test-Path -LiteralPath (Join-Path $mount $relativePath))) { throw "Missing in WIM: $relativePath" }
     }
 
     Run-Dism @('/English','/Unmount-Image',"/MountDir:$mount",'/Commit','/CheckIntegrity')

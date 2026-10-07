@@ -1,12 +1,12 @@
 <#
 .SYNOPSIS
-    Controleert interne links in README en docs (relatieve paden en ankertjes).
+    Checks internal links in README and docs (relative paths and anchors).
 
 .DESCRIPTION
-    Loopt alle Markdown-bestanden in de repository en controleert dat ieder
-    relatief linkdoel (pad of pad#anker) bestaat. Externe http(s)-links worden
-    niet gevolgd (CI blijft deterministisch en offline); die worden periodiek
-    handmatig gecontroleerd in de onderhoudsronde.
+    Walks all Markdown files in the repository and checks that every
+    relative link target (path or path#anchor) exists. External http(s)-links
+    are not followed (CI stays deterministic and offline); those are checked
+    periodically by hand during the maintenance round.
 
 .EXAMPLE
     ./tools/Test-InternalLinks.ps1
@@ -37,15 +37,15 @@ foreach ($file in $files) {
     $links = [regex]::Matches($text, '\[[^\]]+\]\(([^)#\s]+)(#[^)\s]*)?\)')
     foreach ($link in $links) {
         $url = $link.Groups[1].Value
-        # externe URL's, ankertjes en GitHub-UI-pseudopaden (../../releases) overslaan
+        # skip external URLs, anchors and GitHub-UI pseudo paths (../../releases)
         if ($url -match '^(https?:|mailto:|#|\.\./)') { continue }
         $targetPath = Join-Path $file.DirectoryName ($url -replace '/', [System.IO.Path]::DirectorySeparatorChar)
         if (-not (Test-Path -LiteralPath $targetPath)) {
-            Write-Host "[FAIL] $($file.FullName.Substring($repo.Length + 1)): linkdoel ontbreekt -> $url" -ForegroundColor Red
+            Write-Host "[FAIL] $($file.FullName.Substring($repo.Length + 1)): link target missing -> $url" -ForegroundColor Red
             $script:fail++
         } elseif ($link.Groups[2].Value -and (Get-Item -LiteralPath $targetPath).Extension -eq '.md') {
             if (-not (Test-Anchor -MarkdownPath $targetPath -Anchor ($link.Groups[2].Value.Substring(1)))) {
-                Write-Host "[FAIL] $($file.FullName.Substring($repo.Length + 1)): anker ontbreekt -> $($link.Groups[2].Value)" -ForegroundColor Red
+                Write-Host "[FAIL] $($file.FullName.Substring($repo.Length + 1)): anchor missing -> $($link.Groups[2].Value)" -ForegroundColor Red
                 $script:fail++
             }
         }
@@ -53,6 +53,6 @@ foreach ($file in $files) {
 }
 
 Write-Host ''
-if ($fail) { Write-Host "LINKCHECK: $fail gebroken interne link(s)" -ForegroundColor Red; exit 1 }
-Write-Host "LINKCHECK: alle interne links ok ($($files.Count) markdown-bestanden)" -ForegroundColor Green
+if ($fail) { Write-Host "LINKCHECK: $fail broken internal link(s)" -ForegroundColor Red; exit 1 }
+Write-Host "LINKCHECK: all internal links ok ($($files.Count) markdown files)" -ForegroundColor Green
 exit 0

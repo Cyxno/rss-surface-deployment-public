@@ -1,5 +1,5 @@
-# Alleen GitHub Actions-pinning: het project heeft geen applicatie-afhankelijkheden
-# in package managers; PowerShell-modules zijn expliciet gepind in de workflow.
+# GitHub Actions pinning only: the project has no application dependencies
+# in package managers; PowerShell modules are pinned explicitly in the workflow.
 version: 2
 updates:
   - package-ecosystem: github-actions

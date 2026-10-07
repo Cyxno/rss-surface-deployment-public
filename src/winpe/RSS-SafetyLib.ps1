@@ -1,71 +1,71 @@
 ﻿<#
 .SYNOPSIS
-    RSS-veiligheidsbibliotheek: pure beslisfuncties voor de deployment.
+    RSS safety library: pure decision functions for the deployment.
 
 .DESCRIPTION
-    Alle veiligheidsbeslissingen van RSS-Deploy.ps1 staan in deze library als
-    pure functies: model- en SKU-detectie, mediaherkenning, doelschijfselectie
-    en artefactintegriteit. Geen enkele functie wijzigt een disk of bestand;
-    elke functie stopt met een terminating error zodra een situatie niet
-    ondubbelzinnig veilig is.
+    All safety decisions of RSS-Deploy.ps1 live in this library as
+    pure functions: model and SKU detection, media recognition, target disk
+    selection and artifact integrity. No function modifies a disk or file;
+    every function stops with a terminating error as soon as a situation is
+    not unambiguously safe.
 
-    Faalveilige filosofie (zie config/sources.json > diskSafety):
+    Fail-safe philosophy (see config/sources.json > diskSafety):
         UNKNOWN     = STOP
         AMBIGUOUS   = STOP
         UNSUPPORTED = STOP
         MISSING     = STOP
         INVALID     = STOP
 
-    Omdat de functies parametergestuurd zijn, kunnen de Pester-tests in
-    tests/ elke gevaarlijke situatie mocken zonder ooit echte disks aan
-    te raken. De regexes, foutmeldingen en volgorde zijn identiek aan de
-    bewezen productielogica; alleen de SKU-allowlist (uit het manifest)
-    en de NVMe-eenduidigheidscontrole zijn nieuw en strikt faalveilig.
+    Because the functions are parameter-driven, the Pester tests in
+    tests/ can mock every dangerous situation without ever touching real
+    disks. The regexes, error messages and order are identical to the
+    proven production logic; only the SKU allowlist (from the manifest)
+    and the NVMe ambiguity check are new and strictly fail-safe.
 #>
 
 # ------------------------------------------------------------- manifest
 
 function Get-RSSManifest {
-    <# Leest het canonical manifest van de stick. MISSING = STOP. #>
+    <# Reads the canonical manifest from the stick. MISSING = STOP. #>
     param(
         [Parameter(Mandatory)] [string]$Path
     )
     if (-not (Test-Path -LiteralPath $Path)) {
-        throw "RSS-manifest ontbreekt: $Path (verwacht sources.json in de wortel van de Images-partitie)"
+        throw "RSS manifest missing: $Path (expected sources.json in the root of the Images partition)"
     }
     $manifest = Get-Content -LiteralPath $Path -Raw -Encoding UTF8 | ConvertFrom-Json
     foreach ($required in 'surfaceDriverPacks', 'windows', 'diskSafety') {
         if (-not $manifest.PSObject.Properties[$required]) {
-            throw "RSS-manifest is incompleet: sectie '$required' ontbreekt in $Path"
+            throw "RSS manifest is incomplete: section '$required' missing in $Path"
         }
     }
     foreach ($pack in $manifest.surfaceDriverPacks) {
         foreach ($required in 'profile', 'infCount', 'archiveSha256', 'cpuVendor', 'systemSku') {
             if (-not $pack.PSObject.Properties[$required]) {
-                throw "RSS-manifest is incompleet: driverpakket zonder '$required'"
+                throw "RSS manifest is incomplete: driver pack without '$required'"
             }
         }
         if (@($pack.systemSku.supported).Count -eq 0) {
-            throw "RSS-manifest is incompleet: profiel $($pack.profile) heeft geen supported SystemSKU's"
+            throw "RSS manifest is incomplete: profile $($pack.profile) has no supported SystemSKUs"
         }
     }
     return $manifest
 }
 
-# ------------------------------------------------- model- en SKU-detectie
+# ------------------------------------------------- model and SKU detection
 
 function Get-RSSModelProfile {
     <#
-        Detecteert het Surface-model op basis van SMBIOS SystemProductName,
-        SystemSKU en CPU-vendor. Levert het manifestprofiel van het model op.
-        Elke afwijking is een terminating error (veilige stop).
+        Detects the Surface model based on SMBIOS SystemProductName,
+        SystemSKU and CPU vendor. Returns the manifest profile of the model.
+        Every deviation is a terminating error (safe stop).
 
-        Volgorde is identiek aan de bewezen productielogica:
-        1. Snapdragon-naamweigering,
-        2. strikte regex-routering op SystemProductName,
-        3. onbekende naam -> STOP,
-        4. CPU-vendorcontrole per profiel,
-        5. SystemSKU-controle tegen de allowlist/refuselist in het manifest.
+        Order is identical to the proven production logic:
+        1. Snapdragon name refusal,
+        2. strict regex routing on SystemProductName,
+        3. unknown name -> STOP,
+        4. CPU vendor check per profile,
+        5. SystemSKU check against the allowlist/refusal list in the manifest.
     #>
     param(
         [Parameter(Mandatory)] [string]$SystemProductName,
@@ -75,7 +75,7 @@ function Get-RSSModelProfile {
     )
 
     if ($SystemProductName -match 'Snapdragon') {
-        throw "ARM/Snapdragon-model wordt niet ondersteund: $SystemProductName (SKU: $SystemSku)"
+        throw "ARM/Snapdragon model is not supported: $SystemProductName (SKU: $SystemSku)"
     }
 
     $modelNumber = switch -Regex ($SystemProductName) {
@@ -87,50 +87,50 @@ function Get-RSSModelProfile {
         default { $null }
     }
     if (-not $modelNumber) {
-        throw "niet-ondersteund model: $SystemProductName (SKU: $SystemSku)"
+        throw "unsupported model: $SystemProductName (SKU: $SystemSku)"
     }
 
     if ($modelNumber -eq 4 -and $CpuVendor -ne 'AuthenticAMD') {
-        throw "Surface Laptop 4 is niet AMD: $CpuVendor"
+        throw "Surface Laptop 4 is not AMD: $CpuVendor"
     }
     if ($modelNumber -in 5, 6, 7, 8 -and $CpuVendor -ne 'GenuineIntel') {
-        throw "Surface Laptop $modelNumber is niet Intel: $CpuVendor"
+        throw "Surface Laptop $modelNumber is not Intel: $CpuVendor"
     }
     if ($CpuVendor -notin 'AuthenticAMD', 'GenuineIntel') {
-        throw "CPU-architectuur wordt niet ondersteund (ARM/overig): $CpuVendor"
+        throw "CPU architecture is not supported (ARM/other): $CpuVendor"
     }
 
     $modelProfile = $Manifest.surfaceDriverPacks |
         Where-Object { $_.profile -eq "SF$modelNumber" }
     if (-not $modelProfile) {
-        throw "profiel SF$modelNumber ontbreekt in het RSS-manifest"
+        throw "profile SF$modelNumber missing in the RSS manifest"
     }
 
-    # SystemSKU-controle: UNKNOWN = STOP, UNSUPPORTED = STOP.
+    # SystemSKU check: UNKNOWN = STOP, UNSUPPORTED = STOP.
     $SystemSku = $SystemSku.Trim()
     if ([string]::IsNullOrWhiteSpace($SystemSku)) {
-        throw "SystemSKU is leeg of onleesbaar; modeldetectie is niet eenduidig (naam: $SystemProductName)"
+        throw "SystemSKU is empty or unreadable; model detection is not unambiguous (name: $SystemProductName)"
     }
     $supportedSkus = @($modelProfile.systemSku.supported)
     $refusedSkus = @($modelProfile.systemSku.refused)
     if ($refusedSkus -contains $SystemSku) {
-        throw "SystemSKU $SystemSku staat op de weigerlijst voor SF$modelNumber ($($modelProfile.product))"
+        throw "SystemSKU $SystemSku is on the refusal list for SF$modelNumber ($($modelProfile.product))"
     }
     if ($supportedSkus -notcontains $SystemSku) {
-        throw "SystemSKU $SystemSku is onbekend voor SF$modelNumber; werk config/sources.json bij na verificatie"
+        throw "SystemSKU $SystemSku is unknown for SF$modelNumber; update config/sources.json after verification"
     }
 
     return $modelProfile
 }
 
-# ------------------------------------------------------- mediaherkenning
+# ------------------------------------------------------- media recognition
 
 function Resolve-RSSMediaRoot {
     <#
-        Vindt exact één RSS-datapartitie aan de hand van de herkenningspaden
-        SF4 + SF8 install.esd. Nul of meerdere kandidaten = STOP (AMBIGUOUS).
-        $DriveRoots is de lijst met wortelpaden (bijv. 'C:\', 'D:\') van de
-        beschikbare filesystem-drives.
+        Finds exactly one RSS data partition using the recognition paths
+        SF4 + SF8 install.esd. Zero or multiple candidates = STOP (AMBIGUOUS).
+        $DriveRoots is the list of root paths (e.g. 'C:\', 'D:\') of the
+        available filesystem drives.
     #>
     param(
         [Parameter(Mandatory)] [AllowEmptyCollection()] [string[]]$DriveRoots
@@ -140,53 +140,53 @@ function Resolve-RSSMediaRoot {
         (Test-Path -LiteralPath (Join-Path $_ 'RSSSetup\SF8\sources\install.esd'))
     })
     if ($candidates.Count -ne 1) {
-        throw "verwacht exact een RSS-datapartitie, gevonden: $($candidates.Count)"
+        throw "expected exactly one RSS data partition, found: $($candidates.Count)"
     }
     return $candidates[0].TrimEnd('\', '/')
 }
 
-# ----------------------------------------------------- doelschijfselectie
+# ----------------------------------------------------- target disk selection
 
 function Select-RSSTargetDisk {
     <#
-        Kiest en valideert de interne doelschijf. Uitsluitend precies één
-        interne NVMe-schijf die toevallig Disk 0 is, komt in aanmerking.
-        De USB-datapartitie mag nooit Disk 0 en nooit de doelschijf zijn.
+        Chooses and validates the internal target disk. Only exactly one
+        internal NVMe disk that happens to be Disk 0 qualifies.
+        The USB data partition may never be Disk 0 and never the target disk.
     #>
     param(
         [Parameter(Mandatory)] [AllowEmptyCollection()] [object[]]$Disks,
         [Parameter(Mandatory)] [int]$MediaDiskNumber
     )
     if ($MediaDiskNumber -eq 0) {
-        throw 'USB-datapartitie bevindt zich op Disk 0'
+        throw 'USB data partition is on Disk 0'
     }
 
     $disk0 = $Disks | Where-Object { $_.Number -eq 0 }
     $nvme = @($Disks | Where-Object { $_.BusType -eq 'NVMe' })
 
     if ($nvme.Count -eq 0) {
-        $busType = if ($disk0) { $disk0.BusType } else { 'onbekend' }
-        throw "Disk 0 is geen NVMe maar $busType"
+        $busType = if ($disk0) { $disk0.BusType } else { 'unknown' }
+        throw "Disk 0 is not NVMe but $busType"
     }
     if ($nvme.Count -gt 1) {
-        throw "meerdere interne NVMe-schijven gevonden (Disk $(($nvme | ForEach-Object Number) -join ', Disk ')); doelschijf is niet eenduidig"
+        throw "multiple internal NVMe disks found (Disk $(($nvme | ForEach-Object Number) -join ', Disk ')); target disk is ambiguous"
     }
     $target = $nvme[0]
     if ($target.Number -eq $MediaDiskNumber) {
-        throw 'doelschijf en USB zijn dezelfde fysieke disk'
+        throw 'target disk and USB are the same physical disk'
     }
     if ($target.Number -ne 0) {
-        throw "interne NVMe-schijf is Disk $($target.Number), niet Disk 0; doelschijf is niet eenduidig"
+        throw "internal NVMe disk is Disk $($target.Number), not Disk 0; target disk is ambiguous"
     }
     return $target
 }
 
-# --------------------------------------------------- artefactintegriteit
+# --------------------------------------------------- artifact integrity
 
 function Test-RSSArtifactHash {
     <#
-        Controleert SHA-256 van een bestand tegen het manifest vóórdat er ook
-        maar iets destructiefs gebeurt. MISSING/INVALID = STOP.
+        Checks the SHA-256 of a file against the manifest before anything
+        destructive happens. MISSING/INVALID = STOP.
     #>
     param(
         [Parameter(Mandatory)] [string]$Path,
@@ -194,10 +194,10 @@ function Test-RSSArtifactHash {
         [Parameter(Mandatory)] [string]$Label
     )
     if (-not (Test-Path -LiteralPath $Path)) {
-        throw "$Label ontbreekt: $Path"
+        throw "$Label missing: $Path"
     }
     $actual = (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash
     if ($actual -ne $ExpectedSha256) {
-        throw "$Label komt niet overeen met het manifest (hash-wijkt-af): verwacht $ExpectedSha256, gevonden $actual"
+        throw "$Label does not match the manifest (hash mismatch): expected $ExpectedSha256, found $actual"
     }
 }

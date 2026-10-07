@@ -1,14 +1,14 @@
-# Normale tekstbestanden: normaliseren naar LF in de repository
+# Normal text files: normalize to LF in the repository
 * text=auto
 
-# Windows-specifieke bronnen altijd CRLF
+# Windows-specific sources always CRLF
 *.ps1 text eol=crlf
 *.psd1 text eol=crlf
 *.psm1 text eol=crlf
 *.cmd text eol=crlf
 *.bat text eol=crlf
 
-# Gedefinieerde LF-bestanden
+# Defined LF files
 *.json text eol=lf
 *.yml text eol=lf
 *.yaml text eol=lf
@@ -16,7 +16,7 @@
 *.txt text eol=lf
 .editorconfig text eol=lf
 
-# Binaries nooit wijzigen
+# Never modify binaries
 *.docx binary
 *.pdf binary
 *.png binary

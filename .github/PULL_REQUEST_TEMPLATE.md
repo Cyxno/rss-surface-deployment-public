@@ -1,30 +1,30 @@
 <!--
-Vul de checklist in. CI valideert syntax, guardrails, manifestconsistentie,
-links en secrets; media- en fysieke validatie kan niet via CI en moet hier
-expliciet gemeld worden.
+Fill in the checklist. CI validates syntax, guardrails, manifest consistency,
+links and secrets; media and physical validation cannot be done via CI and must
+be reported explicitly here.
 -->
 
-## Wat verandert er en waarom?
+## What changes and why?
 
-<!-- context: welke implementatie/manifest/docs-aanpassing, met bewijs waar nodig
-     (zie CONTRIBUTING.md: bewijs vóór wijziging) -->
+<!-- context: which implementation/manifest/docs change, with proof where needed
+     (see CONTRIBUTING.md: proof before change) -->
 
-## Invloed op de deployment
+## Impact on the deployment
 
-- [ ] Geen invloed op RSS-Deploy.ps1 / boot.wim
-- [ ] Wijzigt deploymentlogica → media-herbouw + fysieke test vereist
-- [ ] Wijzigt manifest (versies/hashes/SKU's) → bron gecontroleerd tegen Microsoft
+- [ ] No impact on RSS-Deploy.ps1 / boot.wim
+- [ ] Changes deployment logic → media rebuild + physical test required
+- [ ] Changes the manifest (versions/hashes/SKUs) → source verified against Microsoft
 
 ## Checklist
 
-- [ ] CI groen (automatisch)
-- [ ] `tools/Build-Checksums.ps1` gedraaid na bestandswijzigingen
-- [ ] Documentatie regenereren waar nodig: `tools/Build-Documentation.ps1`
-- [ ] Tests uitgebreid voor nieuwe veiligheidslogica
-- [ ] CHANGELOG.md bijgewerkt
-- [ ] Geen secrets of Microsoft-binaries toegevoegd
+- [ ] CI green (automatic)
+- [ ] `tools/Build-Checksums.ps1` run after file changes
+- [ ] Documentation regenerated where needed: `tools/Build-Documentation.ps1`
+- [ ] Tests extended for new safety logic
+- [ ] CHANGELOG.md updated
+- [ ] No secrets or Microsoft binaries added
 
-## Fysieke teststatus
+## Physical test status
 
-<!-- bij wijzigingen die een rebuild vereisen: welke modellen zijn fysiek
-     (her)getest, en welke zijn daarmee NOT PHYSICALLY VALIDATED op de nieuwe media? -->
+<!-- for changes that require a rebuild: which models were physically
+     (re)tested, and which are therefore NOT PHYSICALLY VALIDATED on the new media? -->

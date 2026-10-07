@@ -1,46 +1,46 @@
-# RSS FYSIEKE TEST — SNELLE CHECKLIST
+# RSS PHYSICAL TEST — QUICK CHECKLIST
 
-> ## 🔴 BIJ ROOD SCHERM
-> **Maak een foto van de foutmelding en kopieer `F:\RSS-ADK-Deploy.log`**
-> (van de Images-partitie) **voordat je opnieuw probeert.**
-> Schakel uit met de aan/uitknop; het scherm blijft bewust rood staan.
+> ## 🔴 ON A RED SCREEN
+> **Take a photo of the error message and copy `F:\RSS-ADK-Deploy.log`**
+> (from the Images partition) **before you retry.**
+> Power off with the power button; the screen stays red deliberately.
 
-Apparaat: ______________  Datum: ____-__-__  Tester: __________
+Device: ______________  Date: ____-__-__  Tester: __________
 
-## Vooraf
+## Before you start
 
-- [ ] USB-stick geplaatst (apparaat UIT)
-- [ ] Secure Boot **AAN** in Surface UEFI
-- [ ] TPM **AAN**
-- [ ] Netvoeding aangesloten
+- [ ] USB stick inserted (device OFF)
+- [ ] Secure Boot **ON** in Surface UEFI
+- [ ] TPM **ON**
+- [ ] Power adapter connected
 
-## Deployment (niets aanraken na stap 3!)
+## Deployment (do not touch anything after step 3!)
 
-- [ ] Boot vanaf USB (UEFI)
-- [ ] WinPE start automatisch (zwart/groen scherm)
-- [ ] Correct model gedetecteerd (staat op het scherm)
-- [ ] Juist SF-profiel (SF4/SF5/SF6/SF7/SF8)
-- [ ] Doelschijf = interne NVMe (staat op het scherm)
-- [ ] Na 15 s aftelling start het wissen automatisch
+- [ ] Boot from USB (UEFI)
+- [ ] WinPE starts automatically (black/green screen)
+- [ ] Correct model detected (shown on screen)
+- [ ] Correct SF profile (SF4/SF5/SF6/SF7/SF8)
+- [ ] Target disk = internal NVMe (shown on screen)
+- [ ] After the 15 s countdown the wipe starts automatically
 
-## Installatie
+## Installation
 
-- [ ] Windows-image toegepast
-- [ ] Drivers geïnjecteerd
-- [ ] **GROEN scherm** ("INSTALLATIE GESLAAGD")
-- [ ] Automatische reboot → **USB verwijderd tijdens groen scherm**
+- [ ] Windows image applied
+- [ ] Drivers injected
+- [ ] **GREEN screen** ("INSTALLATION SUCCESSFUL!")
+- [ ] Automatic reboot → **USB removed during green screen**
 
-## Eerste Windows-boot
+## First Windows boot
 
-- [ ] Windows start met Secure Boot aan
-- [ ] Toetsenbord werkt
-- [ ] Trackpad/touch werkt
-- [ ] Wi-Fi netwerken zichtbaar
-- [ ] **Normale OOBE** verschijnt (geen auto-aangemelde gebruiker)
-- [ ] MDM/Autopilot-inschrijving gestart / mogelijk
-- [ ] Apparaatbeheer: geen onbekende essentiële apparaten
+- [ ] Windows boots with Secure Boot on
+- [ ] Keyboard works
+- [ ] Trackpad/touch works
+- [ ] Wi-Fi networks visible
+- [ ] **Normal OOBE** appears (no auto-signed-in user)
+- [ ] MDM/Autopilot enrollment started / possible
+- [ ] Device Manager: no unknown essential devices
 
-## Notities
+## Notes
 
 .................................................................
 

@@ -1,86 +1,86 @@
-# RSS-testmatrix — refresh 2026-10 (SF4 t/m SF8)
+# RSS test matrix — refresh 2026-10 (SF4 through SF8)
 
-Per apparaat volledig doorlopen vóór productievrijgave van een nieuwe stick.
-Eén kandidaat-stick per bouwronde; minimaal één volledige deployment per model.
+Run completely for each device before the production release of a new stick.
+One candidate stick per build round; at least one full deployment per model.
 
-Modellen: Surface Laptop 4 AMD · Surface Laptop 5 Intel · Surface Laptop 6
+Models: Surface Laptop 4 AMD · Surface Laptop 5 Intel · Surface Laptop 6
 for Business Intel · Surface Laptop for Business 7th Edition Intel ·
 Surface Laptop for Business 8th Edition Intel
 
-> **Statusregistratie:** de fysieke validatiestatus per model staat in
-> `config/sources.json` (`physicalValidation`) en wordt zichtbaar in README en
-> handleiding. Modellen zonder fysieke test blijven expliciet
-> **NOT PHYSICALLY VALIDATED**, ook als ze softwarematig "supported" zijn.
+> **Status tracking:** the physical validation status per model is in
+> `config/sources.json` (`physicalValidation`) and is shown in the README and
+> the manual. Models without a physical test remain explicitly
+> **NOT PHYSICALLY VALIDATED**, even if they are "supported" at the software level.
 
-## Boot en detectie
+## Boot and detection
 
-| Controle | SF4 | SF5 | SF6 | SF7 | SF8 |
+| Check | SF4 | SF5 | SF6 | SF7 | SF8 |
 |---|---|---|---|---|---|
-| Secure Boot AAN | ☐ | ☐ | ☐ | ☐ | ☐ |
-| TPM AAN | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Secure Boot ON | ☐ | ☐ | ☐ | ☐ | ☐ |
+| TPM ON | ☐ | ☐ | ☐ | ☐ | ☐ |
 | USB UEFI boot | ☐ | ☐ | ☐ | ☐ | ☐ |
-| WinPE start automatisch | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Correct model gedetecteerd | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Correcte SystemSKU getoond | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Juiste CPU gedetecteerd (AMD/Intel) | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Juiste USB-disk gedetecteerd | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Juiste NVMe Disk 0 gedetecteerd | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Manifest geladen (hashcontrole actief) | ☐ | ☐ | ☐ | ☐ | ☐ |
+| WinPE starts automatically | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Correct model detected | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Correct SystemSKU shown | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Correct CPU detected (AMD/Intel) | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Correct USB disk detected | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Correct NVMe Disk 0 detected | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Manifest loaded (hash check active) | ☐ | ☐ | ☐ | ☐ | ☐ |
 
-## Routing en veiligheid
+## Routing and safety
 
-| Controle | SF4 | SF5 | SF6 | SF7 | SF8 |
+| Check | SF4 | SF5 | SF6 | SF7 | SF8 |
 |---|---|---|---|---|---|
-| Juiste image geselecteerd (SFx) | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Juiste driverarchive geselecteerd | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Image- en archief-hash geverifieerd vóór aftelling | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Preflight stopt veilig bij fouten | ☐ | ☐ | ☐ | ☐ | ☐ |
-| ARM/Snapdragon geweigerd (negatieve test) | n.v.t. | n.v.t. | n.v.t. | ☐ | ☐ |
+| Correct image selected (SFx) | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Correct driver archive selected | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Image and archive hashes verified before countdown | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Preflight stops safely on errors | ☐ | ☐ | ☐ | ☐ | ☐ |
+| ARM/Snapdragon refused (negative test) | n/a | n/a | n/a | ☐ | ☐ |
 
 ## Deployment
 
-| Controle | SF4 | SF5 | SF6 | SF7 | SF8 |
+| Check | SF4 | SF5 | SF6 | SF7 | SF8 |
 |---|---|---|---|---|---|
-| Disk wipe na 15 s aftelling | ☐ | ☐ | ☐ | ☐ | ☐ |
-| GPT-indeling (EFI 260 MB + MSR 16 MB + Windows) | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Windows-image apply geslaagd | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Volledige driverinjectie | ☐ | ☐ | ☐ | ☐ | ☐ |
-| INF-count klopt exact (78/112/116/119/120) | ☐ | ☐ | ☐ | ☐ | ☐ |
-| BCDBoot succesvol | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Microsoft bootmgfw.efi aanwezig | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Groen successcherm + automatische reboot | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Disk wipe after 15 s countdown | ☐ | ☐ | ☐ | ☐ | ☐ |
+| GPT layout (EFI 260 MB + MSR 16 MB + Windows) | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Windows image apply succeeded | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Full driver injection | ☐ | ☐ | ☐ | ☐ | ☐ |
+| INF count exact (78/112/116/119/120) | ☐ | ☐ | ☐ | ☐ | ☐ |
+| BCDBoot successful | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Microsoft bootmgfw.efi present | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Green success screen + automatic reboot | ☐ | ☐ | ☐ | ☐ | ☐ |
 
-## Eerste boot en overdracht
+## First boot and handover
 
-| Controle | SF4 | SF5 | SF6 | SF7 | SF8 |
+| Check | SF4 | SF5 | SF6 | SF7 | SF8 |
 |---|---|---|---|---|---|
-| USB verwijderd, Windows boot met Secure Boot | ☐ | ☐ | ☐ | ☐ | ☐ |
-| OOBE verschijnt (normale Microsoft-flow) | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Toetsenbord/trackpad werken | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Touchscreen werkt | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Wi-Fi werkt | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Ethernet/USB-C indien relevant | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Bluetooth werkt | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Camera werkt | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Audio werkt | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Apparaatbeheer zonder onbekende essentiële apparaten | ☐ | ☐ | ☐ | ☐ | ☐ |
-| MDM/Autopilot-inschrijving gestart / mogelijk | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Windows Update vindt hooguit updates ná het bouwmoment | ☐ | ☐ | ☐ | ☐ | ☐ |
-| Herstart + afsluiten netjes | ☐ | ☐ | ☐ | ☐ | ☐ |
+| USB removed, Windows boots with Secure Boot | ☐ | ☐ | ☐ | ☐ | ☐ |
+| OOBE appears (normal Microsoft flow) | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Keyboard/trackpad work | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Touchscreen works | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Wi-Fi works | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Ethernet/USB-C if relevant | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Bluetooth works | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Camera works | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Audio works | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Device Manager without unknown essential devices | ☐ | ☐ | ☐ | ☐ | ☐ |
+| MDM/Autopilot enrollment started / possible | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Windows Update finds at most updates newer than the build time | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Restart + clean shutdown | ☐ | ☐ | ☐ | ☐ | ☐ |
 
-## Negatieve tests (stick-niveau, één keer per release)
+## Negative tests (stick level, once per release)
 
-- [ ] Niet-ondersteund model toont rood scherm zonder Disk 0 aan te passen.
-- [ ] Surface Laptop 7/8 ARM/Snapdragon wordt geweigerd (modelnaam óf CPU-vendor óf SKU).
-- [ ] Surface Laptop 5G for Business 7th Edition (SKU `_2119`) wordt geweigerd.
-- [ ] Onbekende SystemSKU (bijv. geblokkeerde/vervallen variant) stopt veilig.
-- [ ] Missende driverarchive stopt de preflight veilig.
-- [ ] Gewijzigd bestand op de stick (hash-mismatch) stopt vóór de aftelling.
-- [ ] Geen enkele stap vraagt om toetsenbord-, muis- of scherminvoer.
-- [ ] RSS-ADK-Deploy.log eindigt op RESULT=SUCCESS bij geslaagde runs.
+- [ ] Unsupported model shows a red screen without modifying Disk 0.
+- [ ] Surface Laptop 7/8 ARM/Snapdragon is refused (model name or CPU vendor or SKU).
+- [ ] Surface Laptop 5G for Business 7th Edition (SKU `_2119`) is refused.
+- [ ] Unknown SystemSKU (e.g. a blocked/withdrawn variant) stops safely.
+- [ ] Missing driver archive stops the preflight safely.
+- [ ] Modified file on the stick (hash mismatch) stops before the countdown.
+- [ ] No step asks for keyboard, mouse or on-screen input.
+- [ ] RSS-ADK-Deploy.log ends with RESULT=SUCCESS on successful runs.
 
-## OOBE/Autopilot (per release, minimaal één apparaat)
+## OOBE/Autopilot (per release, at least one device)
 
-- [ ] OOBE voltooit op een netwerk dat NCSI toestaat (msftconnecttest.com bereikbaar).
-- [ ] Autopilot-profiel wordt opgehaald (event 161 in ModernDeployment-Diagnostics-Provider/Autopilot) óf de oorzaak van uitblijven is gedocumenteerd.
-- [ ] Bij hang op "De verbinding met Microsoft wordt gecontroleerd": diagnose met `tools/Collect-RSSOOBEDiag.ps1` en classificatie volgens hoofdstuk 13.2 van de handleiding (image/netwerk/service/Autopilot/regressie).
+- [ ] OOBE completes on a network that allows NCSI (msftconnecttest.com reachable).
+- [ ] The Autopilot profile is fetched (event 161 in ModernDeployment-Diagnostics-Provider/Autopilot) or the cause of it not arriving is documented.
+- [ ] If it hangs on "De verbinding met Microsoft wordt gecontroleerd" (the on-screen Dutch text for "checking the connection to Microsoft"): diagnose with `tools/Collect-RSSOOBEDiag.ps1` and classify per chapter 13.2 of the manual (image/network/service/Autopilot/regression).

@@ -1,48 +1,48 @@
 # Contributing
 
-Dit is een **source-available** project zonder opensourcelicentie; de repository wordt onderhouden door de eigenaar. Externe pull requests worden niet geaccepteerd; een issue met duidelijke reproductiestappen is welkom.
+This is a **source-available** project without an open-source license; the repository is maintained by its owner. External pull requests are not accepted; an issue with clear reproduction steps is welcome.
 
-## Kernregel: bewijs vóór wijziging
+## Core rule: proof before change
 
-De deploymentlogica is destructief. Verander geen werkende logica alleen omdat een alternatief mooier lijkt:
+The deployment logic is destructive. Do not change working logic merely because an alternative looks nicer:
 
-1. reconstrueer eerst de huidige werking (lees `src/winpe/RSS-SafetyLib.ps1`, `RSS-Deploy.ps1` en de technische handleiding);
-2. wijzig alleen met aantoonbare reden (veiligheid, gedocumenteerde bug, gedocumenteerde Microsoft-wijziging);
-3. bewijs met tests: nieuwe beslislogica hoort in `RSS-SafetyLib.ps1` (pure functies) en krijgt Pester-dekking in `tests/`;
-4. fail-safe heeft voorrang op beschikbaarheid: `UNKNOWN/AMBIGUOUS/UNSUPPORTED/MISSING/INVALID = STOP`.
+1. first reconstruct the current behavior (read `src/winpe/RSS-SafetyLib.ps1`, `RSS-Deploy.ps1` and the technical manual);
+2. change only with a demonstrable reason (safety, a documented bug, a documented Microsoft change);
+3. prove it with tests: new decision logic belongs in `RSS-SafetyLib.ps1` (pure functions) and gets Pester coverage in `tests/`;
+4. fail-safe takes precedence over availability: `UNKNOWN/AMBIGUOUS/UNSUPPORTED/MISSING/INVALID = STOP`.
 
-## Een wijziging doorlopen
+## Taking a change through
 
-1. **Branch** vanaf `main`.
-2. **Manifest eerst:** versies, hashes, INF-aantallen, SKU's en modellen staan uitsluitend in `config/sources.json`. Voeg nergens anders een kopie toe; lees de waarde uit het manifest.
-3. **Tests lokaal** (PowerShell 5.1 of 7+, geen administrator nodig):
+1. **Branch** from `main`.
+2. **Manifest first:** versions, hashes, INF counts, SKUs and models live only in `config/sources.json`. Do not add a copy anywhere else; read the value from the manifest.
+3. **Tests locally** (PowerShell 5.1 or 7+, no administrator required):
    ```powershell
    Invoke-Pester -Path tests
    Invoke-ScriptAnalyzer -Path . -Recurse -Settings .PSScriptAnalyzerSettings.psd1
    ./tools/Test-ManifestConsistency.ps1
    ./tools/Test-InternalLinks.ps1
    ```
-4. **Documentatie:** wijzigingen aan inhoud gaan in `docs/source/**` (Markdown met `{{manifest.pad}}`-tokens); regenereer daarna DOCX/PDF/stickdocs en het README-blok:
+4. **Documentation:** content changes go in `docs/source/**` (Markdown with `{{manifest.pad}}` tokens); afterwards regenerate the DOCX/PDF/stick docs and the README block:
    ```powershell
    ./tools/Build-Documentation.ps1
    ```
-   Vereist pandoc ≥ 3.6 en Typst ≥ 0.15 (of gebruik `-StickDocsOnly` zonder die tools). Genereer de outputs **nooit handmatig**; `docs/generated/` is machine-output.
-5. **Checksums** na elke bestandswijziging:
+   Requires pandoc ≥ 3.6 and Typst ≥ 0.15 (or use `-StickDocsOnly` without those tools). **Never** generate the outputs by hand; `docs/generated/` is machine output.
+5. **Checksums** after every file change:
    ```powershell
    ./tools/Build-Checksums.ps1
    ```
-6. **Commit:** één logisch thema per commit; commitmessages als `feat: …`, `fix: …`, `docs: …`, `chore: …`, `build: …`.
-7. **Pull request:** vul de template in. CI valideert syntax, linting, Pester, manifestconsistentie, interne links, secrets (gitleaks) en afwezigheid van binaries.
+6. **Commit:** one logical theme per commit; commit messages like `feat: …`, `fix: …`, `docs: …`, `chore: …`, `build: …`.
+7. **Pull request:** fill in the template. CI validates syntax, linting, Pester, manifest consistency, internal links, secrets (gitleaks) and absence of binaries.
 
-## Regels
+## Rules
 
-- **Nooit** secrets, wachtwoorden, productsleutels, serienummers, hardware-hashes, deploymentlogs of tenant-identifiers committeren.
-- **Nooit** Microsoft-binaries (`.wim/.esd/.msi/.msu/.iso/.cab`) committeren; `.gitignore` en CI bewaken dit.
-- **Nooit** een hash of download-URL verzinnen/gokken: verifieer tegen de officiële Microsoft-bron en leg de datum van verificatie in het manifest vast (`verifiedCurrent`-velden).
-- **Nooit** nieuwe Surface-modellen "stil" ondersteunen: een nieuw profiel = manifestuitbreiding (SKU's, driverpakket, INF-telling na extractie), load-order, Pester-fixture en een eigen fysieke testronde.
-- Wijzigingen in `RSS-Deploy.ps1`/`RSS-SafetyLib.ps1` vereisen een **media-herbouw en fysieke test** vóór productie; vermeld de status in de PR.
-- Wijzig een productiestick nooit rechtstreeks; werk via `Update-RSSMedia.ps1` op een kandidaatstick.
+- **Never** commit secrets, passwords, product keys, serial numbers, hardware hashes, deployment logs or tenant identifiers.
+- **Never** commit Microsoft binaries (`.wim/.esd/.msi/.msu/.iso/.cab`); `.gitignore` and CI guard against this.
+- **Never** invent or guess a hash or download URL: verify against the official Microsoft source and record the date of verification in the manifest (`verifiedCurrent` fields).
+- **Never** silently support new Surface models: a new profile = manifest extension (SKUs, driver package, INF count after extraction), a load order, a Pester fixture and its own physical test round.
+- Changes to `RSS-Deploy.ps1`/`RSS-SafetyLib.ps1` require a **media rebuild and physical test** before production; state the status in the PR.
+- Never modify a production stick directly; work via `Update-RSSMedia.ps1` on a candidate stick.
 
 ## Releases
 
-Releases volgen `docs/source/procedure/RSS_Test_en_releaseprocedure.md`: semver-tag (`vX.Y.Z`), CHANGELOG-entrie, actuele checksums en de vier expliciete gates (code / media / physical / production approved).
+Releases follow `docs/source/procedure/RSS_Test_and_Release_Procedure.md`: semver tag (`vX.Y.Z`), a CHANGELOG entry, up-to-date checksums and the four explicit gates (code / media / physical / production approved).

@@ -1,124 +1,124 @@
 # RSS — Surface Deployment Stick
 
-**Volledig geautomatiseerde Windows 11-deploymentstick voor Microsoft Surface Laptop — offline, reproduceerbaar en faalveilig.**
+**Fully automated Windows 11 deployment stick for Microsoft Surface Laptop — offline, reproducible and fail-safe.**
 
 [![CI](https://github.com/Cyxno/rss-surface-deployment-public/actions/workflows/validate.yml/badge.svg)](https://github.com/Cyxno/rss-surface-deployment-public/actions/workflows/validate.yml)
 [![Release](https://img.shields.io/badge/release-v2.0.0-0F4761)](../../releases)
 [![PowerShell](https://img.shields.io/badge/PowerShell-5.1%20%7C%207%2B-5391FE?logo=powershell&logoColor=white)](https://learn.microsoft.com/powershell/)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20WinPE-0078D4?logo=windows11&logoColor=white)]()
-[![Validatie](https://img.shields.io/badge/stickvalidatie-read--only%20PASS-2EA043)]()
+[![Validation](https://img.shields.io/badge/stick-validation-read--only%20PASS-2EA043)]()
 
 > [!WARNING]
-> **Deze stick wist de interne NVMe-schijf (Disk 0) zonder bevestigingsvraag** — na een volledige preflight en een aftelling van 15 seconden. Gebruik de stick uitsluitend op een daarvoor aangewezen Surface Laptop waarvan de gegevens bewust mogen worden verwijderd. Onzekere situaties leiden altijd tot een veilige stop vóór de eerste schrijfactie.
+> **This stick wipes the internal NVMe disk (Disk 0) without a confirmation prompt** — after a full preflight and a countdown of 15 seconds. Use the stick only on a Surface Laptop designated for this purpose whose data may deliberately be erased. Uncertain situations always lead to a safe stop before the first write action.
 
 ---
 
-## Wat is RSS?
+## What is RSS?
 
-RSS boot een Surface Laptop vanaf USB in een volledig automatische WinPE-omgeving: het detecteert model, SystemSKU en CPU, controleert de media- en schijfsituatie inclusief SHA-256 van image en driverarchief, wist daarna pas de interne schijf, installeert Windows 11 Pro (Nederlands) met het volledige officiële Surface-driverpakket offline geïnjecteerd, en eindigt in een normale OOBE die klaar is voor Autopilot/Intune. Er is geen toetsenbord, muis of interactie nodig.
+RSS boots a Surface Laptop from USB into a fully automatic WinPE environment: it detects the model, SystemSKU and CPU, checks the media and disk situation including the SHA-256 of the image and driver archive, only then wipes the internal disk, installs Windows 11 Pro (Dutch) with the full official Surface driver package injected offline, and ends in a normal OOBE that is ready for Autopilot/Intune. No keyboard, mouse or interaction is required.
 
 ```mermaid
 flowchart LR
     USB --> WinPE
-    WinPE --> Detectie["Model/SKU/CPU-detectie"]
-    Detectie --> Safety["Preflight + hashcontrole"]
-    Safety -->|-- STOP bij twijfel| Rood["Rood veiligescherm"]
-    Safety -->|alles groen| Aftelling["Aftelling 15 s"]
-    Aftelling --> DiskPrep["Disk 0 wissen + GPT"]
+    WinPE --> Detection["Model/SKU/CPU detection"]
+    Detection --> Safety["Preflight + hash check"]
+    Safety -->|-- STOP when in doubt| Red["Red safety screen"]
+    Safety -->|all green| Countdown["Countdown 15 s"]
+    Countdown --> DiskPrep["Wipe Disk 0 + GPT"]
     DiskPrep --> Windows["Windows-image apply"]
-    Windows --> Drivers["Offline driverinjectie"]
+    Windows --> Drivers["Offline driver injection"]
     Drivers --> Boot["BCDBoot (UEFI)"]
-    Boot --> OOBE["Eerste boot → OOBE → Autopilot"]
+    Boot --> OOBE["First boot → OOBE → Autopilot"]
 ```
 
-## Ondersteunde hardware
+## Supported hardware
 
-<!-- BEGIN GENERATED:sources — wordt ververst door tools/Build-Documentation.ps1 -->
-| Profiel | Model | Platform | Driverpakket van | INF | Fysieke status |
+<!-- BEGIN GENERATED:sources — refreshed by tools/Build-Documentation.ps1 -->
+| Profile | Model | Platform | Driver package from | INF | Physical status |
 |---|---|---|---|---|---|
-| SF4 | Surface Laptop 4 (AMD) | AMD | 2026-08-14 | 78 | ✅ fysiek gevalideerd  |
-| SF5 | Surface Laptop 5 (Intel, consumer + for Business) | Intel | 2026-09-22 | 112 | ✅ fysiek gevalideerd |
-| SF6 | Surface Laptop 6 for Business (Intel) | Intel | 2026-09-22 | 116 | ✅ fysiek gevalideerd |
-| SF7 | Surface Laptop for Business 7th Edition with Intel | Intel | 2026-09-22 | 119 | ✅ fysiek gevalideerd | 
-| SF8 | Surface Laptop for Business 8th Edition with Intel (NIET Snapdragon/ARM) | Intel | 2026-09-11 | 120 | ✅ fysiek gevalideerd |
+| SF4 | Surface Laptop 4 (AMD) | AMD | 2026-08-14 | 78 | ✅ physically validated |
+| SF5 | Surface Laptop 5 (Intel, consumer + for Business) | Intel | 2026-09-22 | 112 | ✅ physically validated |
+| SF6 | Surface Laptop 6 for Business (Intel) | Intel | 2026-09-22 | 116 | ✅ physically validated (2026-09) |
+| SF7 | Surface Laptop for Business 7th Edition with Intel | Intel | 2026-09-22 | 119 | ✅ physically validated |
+| SF8 | Surface Laptop for Business 8th Edition with Intel (NOT Snapdragon/ARM) | Intel | 2026-09-11 | 120 | ✅ physically validated |
 
-**Productiemedium:** Windows 11 Pro 25H2, build 26200.9457 (LCU KB5129195, 2026-09-14), nl-NL · ADK 10.1.26100.9457 · wimlib 1.14.5 · boot.wim SHA-256 `797CCD8…ECEA0563`
+**Production medium:** Windows 11 Pro 25H2, build 26200.9457 (LCU KB5129195, 2026-09-14), nl-NL · ADK 10.1.26100.9457 · wimlib 1.14.5 · boot.wim SHA-256 `797CCD8…ECEA0563`
 <!-- EIND GENERATED:sources -->
 
-**Expliciet niet ondersteund** (veilige stop, niets wordt geschreven): alle andere Surface- en non-Surface-modellen, ARM/Snapdragon-varianten (o.a. Surface Laptop 7th/8th Edition Snapdragon), Surface Laptop 5G for Business 7th Edition (apart driverpakket) en de Intel-variant van de Surface Laptop 4. De detectie controleert naam, SystemSKU (allowlist uit het manifest) én CPU-fabrikant; "supported" betekent níét automatisch "fysiek getest" — zie de statuskolom hierboven.
+**Explicitly not supported** (safe stop, nothing is written): all other Surface and non-Surface models, ARM/Snapdragon variants (including Surface Laptop 7th/8th Edition Snapdragon), Surface Laptop 5G for Business 7th Edition (separate driver package) and the Intel variant of the Surface Laptop 4. Detection checks the name, the SystemSKU (allowlist from the manifest) and the CPU manufacturer; "supported" does not automatically mean "physically tested" — see the status column above.
 
-## Wat is er zeker?
+## What is guaranteed?
 
-RSS onderscheidt vier valideringsniveaus die niet door elkaar mogen worden gehaald:
+RSS distinguishes four validation levels that must not be confused with one another:
 
-| Niveau | Betekenis | Waar zichtbaar |
+| Level | Meaning | Where visible |
 |---|---|---|
-| **code validated** | CI groen: syntax, linting, 33 guardrailtests, manifestconsistentie, secretscan | GitHub Actions per commit |
-| **media validated** | read-only stickvalidatie 0 FAIL op een gebouwde stick | `RSS-Media-Validation.txt` op de stick |
-| **physically validated** | volledige deployment + eerste boot op fysieke hardware, per model | tabel hierboven + manifest |
-| **production approved** | releasegates afgetikt, tag + checksums | releases + `checksums/` |
+| **code validated** | CI green: syntax, linting, 33 guardrail tests, manifest consistency, secret scan | GitHub Actions per commit |
+| **media validated** | read-only stick validation 0 FAIL on a built stick | `RSS-Media-Validation.txt` on the stick |
+| **physically validated** | full deployment + first boot on physical hardware, per model | table above + manifest |
+| **production approved** | release gates ticked off, tag + checksums | releases + `checksums/` |
 
-## Repository-layout
+## Repository layout
 
 ```text
-├── .github/            CI-workflow, issue- en PR-templates
+├── .github/            CI workflow, issue and PR templates
 ├── config/
-│   ├── sources.json    CANONICAAL manifest: versies, modellen, SKU's, hashes, INF-aantallen
-│   └── load-orders/    bewezen WinPE-driverlaadvolgordes per profiel
+│   ├── sources.json    CANONICAL manifest: versions, models, SKUs, hashes, INF counts
+│   └── load-orders/    proven WinPE driver load orders per profile
 ├── docs/
-│   ├── source/         canonical documentatiebronnen (Markdown, met manifest-tokens)
-│   ├── generated/      gegenereerde DOCX/PDF-handleidingen + stickdocumentatie
-│   ├── TESTMATRIX.md   fysieke testmatrix per model
-│   ├── MEDIA-LAYOUT.md partitie- en mappenstructuur van de stick
-│   └── PHYSICAL-TEST-QUICKLIST.md   invulbare fysieke testchecklist
-├── src/winpe/          RSS-SafetyLib.ps1 (beslisfuncties), RSS-Deploy.ps1, Build-WinPE.ps1, startnet.cmd
+│   ├── source/         canonical documentation sources (Markdown, with manifest tokens)
+│   ├── generated/      generated DOCX/PDF manuals + stick documentation
+│   ├── TESTMATRIX.md   physical test matrix per model
+│   ├── MEDIA-LAYOUT.md partition and folder structure of the stick
+│   └── PHYSICAL-TEST-QUICKLIST.md   fillable physical test checklist
+├── src/winpe/          RSS-SafetyLib.ps1 (decision functions), RSS-Deploy.ps1, Build-WinPE.ps1, startnet.cmd
 ├── tools/              Update-RSSMedia.ps1, Validate-RSSMedia.ps1, Test-DriverArchives.ps1,
 │                       Build-Documentation.ps1, Build-Checksums.ps1, Test-ManifestConsistency.ps1,
 │                       Collect-RSSOOBEDiag.ps1
-├── tests/              Pester-guardrailtests (gemockt — raken nooit echte disks)
-└── checksums/          SHA256SUMS.txt over alle Git-bestanden
+├── tests/              Pester guardrail tests (mocked — never touch real disks)
+└── checksums/          SHA256SUMS.txt covering all Git files
 ```
 
-**Bewust níét in Git:** Windows-images, ADK/WinPE-bestanden, Surface-driverpakketten, uitgepakte drivers, gegenereerde WIM/ESD en deploymentlogs. Alles is reproduceerbaar vanuit officiële Microsoft-bronnen via het manifest + `tools/Update-RSSMedia.ps1`.
+**Deliberately not in Git:** Windows images, ADK/WinPE files, Surface driver packages, extracted drivers, generated WIM/ESD and deployment logs. Everything is reproducible from official Microsoft sources via the manifest + `tools/Update-RSSMedia.ps1`.
 
-## Snel beginnen (stick vernieuwen)
+## Quick start (refreshing the stick)
 
-1. Lees de technische handleiding (`docs/generated/RSS_Technische_bouw_en_beheerhandleiding.pdf`).
-2. Installeer ADK 10.1.26100.9457 + WinPE-add-on en wimlib 1.14.5 (links en hashes: `config/sources.json`).
-3. Zet de geservicede Windows-bron klaar (UUP-set, zie manifest) en sluit uitsluitend de doel-USB aan.
-4. Voer gefaseerd uit: `tools\Update-RSSMedia.ps1 -Phase All -UsbDiskNumber <n> -SourceInstallWim <install.wim>` (downloadt, verifieert, bouwt en assembleert; weigert Disk 0 en niet-USB-media).
-5. Valideer read-only: `tools\Validate-RSSMedia.ps1` → 0 FAIL vereist.
-6. Fysieke test per model (zie `docs/TESTMATRIX.md` en `docs/PHYSICAL-TEST-QUICKLIST.md`) vóór productievrijgave.
+1. Read the technical manual (`docs/generated/RSS_Technical_Build_and_Management_Manual.pdf`).
+2. Install ADK 10.1.26100.9457 + the WinPE add-on and wimlib 1.14.5 (links and hashes: `config/sources.json`).
+3. Prepare the serviced Windows source (UUP set, see the manifest) and connect only the target USB drive.
+4. Run in phases: `tools\Update-RSSMedia.ps1 -Phase All -UsbDiskNumber <n> -SourceInstallWim <install.wim>` (downloads, verifies, builds and assembles; refuses Disk 0 and non-USB media).
+5. Validate read-only: `tools\Validate-RSSMedia.ps1` → 0 FAIL required.
+6. Physical test per model (see `docs/TESTMATRIX.md` and `docs/PHYSICAL-TEST-QUICKLIST.md`) before production release approval.
 
-Documentatie regenereren: `tools\Build-Documentation.ps1` (pandoc + Typst; produceert DOCX/PDF en stickdocumentatie uit `docs/source` + `config/sources.json`). Checksums na elke wijziging: `tools\Build-Checksums.ps1`.
+To regenerate the documentation: `tools\Build-Documentation.ps1` (pandoc + Typst; produces DOCX/PDF and stick documentation from `docs/source` + `config/sources.json`). Checksums after every change: `tools\Build-Checksums.ps1`.
 
-## Validatie en tests
+## Validation and tests
 
-| Laag | Commando | Dekking |
+| Layer | Command | Coverage |
 |---|---|---|
-| Guardrails (gemockt) | `Invoke-Pester -Path tests` | ondersteund model, onbekend model, lege/onbekende/weiger-SKU, SF7 5G, SF8 Snapdragon, ARM-naam, CPU-mismatch, geen/meerdere NVMe, NVMe≠Disk 0, USB op Disk 0, USB = doelschijf, nul/meerdere datapartities, ontbrekende archieven, hash-mismatch, incompleet manifest — alles STOP |
-| Stick (read-only) | `tools\Validate-RSSMedia.ps1` | bestanden, hashes, boot.wim, manifest-identiteit, KB's, INF-aantallen, load-orders, syntax, guardrail-aanwezigheid, MDM/OOBE-vrije logica |
-| Manifest | `tools\Test-ManifestConsistency.ps1` | structuur, hash-formaat, URL-hosts, outputs, checksums (ook in CI) |
-| CI | `.github/workflows/validate.yml` | PSScriptAnalyzer, Pester, manifestconsistentie, interne links, secretscan, geen binaries in Git |
+| Guardrails (mocked) | `Invoke-Pester -Path tests` | supported model, unknown model, empty/unknown/refused SKU, SF7 5G, SF8 Snapdragon, ARM name, CPU mismatch, no/multiple NVMe, NVMe≠Disk 0, USB on Disk 0, USB = target disk, zero/multiple data partitions, missing archives, hash mismatch, incomplete manifest — all STOP |
+| Stick (read-only) | `tools\Validate-RSSMedia.ps1` | files, hashes, boot.wim, manifest identity, KBs, INF counts, load orders, syntax, guardrail presence, MDM/OOBE-free logic |
+| Manifest | `tools\Test-ManifestConsistency.ps1` | structure, hash format, URL hosts, outputs, checksums (also in CI) |
+| CI | `.github/workflows/validate.yml` | PSScriptAnalyzer, Pester, manifest consistency, internal links, secret scan, no binaries in Git |
 
-De tests wijzigen nooit een echte disk; fysieke tests blijven een aparte, verplichte stap (quicklist + matrix in `docs/`).
+The tests never modify a real disk; physical testing remains a separate, mandatory step (quicklist + matrix in `docs/`).
 
-## Beheer, security en privacy
+## Management, security and privacy
 
-- **Geen secrets** (wachtwoorden, tokens, productsleutels, serienummers) in Git of logs; CI controleert dit met gitleaks en een binary-scan.
-- **Offline by design:** de deployment gebruikt nooit internet; downloads gebeuren uitsluitend in het onderhoudsscript tegen manifest-URL's met SHA-256 + Authenticode-controle.
-- **Geen OOBE-bypass:** geen unattend, geen lokale account, geen `ms-cxh:localonly`/BypassNRO — de installatie blijft Autopilot/MDM-geschikt; de validatie faalt bewust op deze patronen.
-- Wijzig een werkende productiestick nooit rechtstreeks; bouw, valideer en test eerst een kandidaatstick.
-- Versies, modellen en hashes staan op precies één plek: `config/sources.json`. Drift daartegen wordt door validatie en CI gemarkeerd.
+- **No secrets** (passwords, tokens, product keys, serial numbers) in Git or logs; CI enforces this with gitleaks and a binary scan.
+- **Offline by design:** the deployment never uses the internet; downloads happen only in the maintenance script, against manifest URLs with SHA-256 + Authenticode verification.
+- **No OOBE bypass:** no unattend, no local account, no `ms-cxh:localonly`/BypassNRO — the installation remains Autopilot/MDM-ready; validation deliberately fails on these patterns.
+- Never modify a working production stick directly; build, validate and test a candidate stick first.
+- Versions, models and hashes live in exactly one place: `config/sources.json`. Drift from it is flagged by validation and CI.
 
-## Releaseproces
+## Release process
 
-`code validated` → `media validated` → `physically validated` → `production approved`, met tags volgens semver (`vX.Y.Z`). Gates en sign-off: `docs/generated/RSS_Test_en_releaseprocedure.pdf` en `CHANGELOG.md`. Een release vereist CI groen, stickvalidatie 0 FAIL, fysieke tests per beoogd model en gedocumenteerde known limitations.
+`code validated` → `media validated` → `physically validated` → `production approved`, with tags following semver (`vX.Y.Z`). Gates and sign-off: `docs/generated/RSS_Test_and_Release_Procedure.pdf` and `CHANGELOG.md`. A release requires CI green, stick validation 0 FAIL, physical tests per intended model and documented known limitations.
 
 ## Troubleshooting
 
-Evidence-based symptoom→oorzaak→diagnose→oplossing voor boot, WinPE-invoer, NVMe, driverload-order, DISM/WIM, OOBE-hang (NCSI/Autopilot/Microsoft-service), hash-mismatches en corrupte media: hoofdstuk 18 van de technische handleiding. Voor OOBE-diagnose op locatie: `tools\Collect-RSSOOBEDiag.ps1` (read-only, Shift+F10).
+Evidence-based symptom→cause→diagnosis→solution for boot issues, WinPE input, NVMe, driver load order, DISM/WIM, OOBE hangs (NCSI/Autopilot/Microsoft service), hash mismatches and corrupt media: chapter 18 of the technical manual. For on-site OOBE diagnostics: `tools\Collect-RSSOOBEDiag.ps1` (read-only, Shift+F10).
 
 ## Disclaimer
 
-Deze repository wordt 'as-is' beschikbaar gesteld: er is geen opensourcelicentie toegekend en gebruik is voor eigen risico. RSS wist schijven: gebruik impliceert dat de gebruiker bevoegd en geïnformeerd is. Microsoft, Surface en Windows zijn trademarks van Microsoft Corporation; RSS is geen Microsoft-product.
+This repository is made available 'as-is': no open-source license is granted and use is at your own risk. RSS wipes disks: using it implies the user is authorized and informed. Microsoft, Surface and Windows are trademarks of Microsoft Corporation; RSS is not a Microsoft product.

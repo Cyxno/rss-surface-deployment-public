@@ -1,12 +1,12 @@
-# Controlesums
+# Checksums
 
-`SHA256SUMS.txt` bevat SHA-256-controlewaarden voor de beheerde bronbestanden en voor de belangrijkste configuratiebestanden van de bewezen productie-USB. Grote Microsoft-binaries worden niet in de repository opgenomen; hun controlesom blijft wel bruikbaar om een lokaal archief of een gekloonde stick te controleren.
+`SHA256SUMS.txt` contains SHA-256 checksums for the managed source files and for the key configuration files of the proven production USB. Large Microsoft binaries are not included in the repository; their checksums remain useful for verifying a local archive or a cloned stick.
 
-Controleer een bestand in PowerShell met:
+Verify a file in PowerShell with:
 
 ```powershell
-Get-FileHash -LiteralPath '<pad>' -Algorithm SHA256
+Get-FileHash -LiteralPath '<path>' -Algorithm SHA256
 ```
 
 
-N.B.: de controlesums zijn berekend op de Windows-werkkopie, dus met de door `.gitattributes` voorgeschreven regeleindes (CRLF voor PowerShell/CMD, LF voor de overige tekstbestanden). Controleer bij voorkeur op een Windows-checkout van dezelfde tag; op een Linux-checkout verschillen de regeleindes en daarmee de hashes van de betreffende bestanden.
+Note: the checksums were computed on the Windows working copy, i.e. with the line endings prescribed by `.gitattributes` (CRLF for PowerShell/CMD, LF for the other text files). Verify preferably on a Windows checkout of the same tag; on a Linux checkout the line endings — and with them the hashes of the affected files — differ.

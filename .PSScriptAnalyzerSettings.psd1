@@ -1,15 +1,15 @@
 @{
     Severity = @('Error', 'Warning')
 
-    # Projectbewuste uitsluitingen (elk met reden):
-    # - PSAvoidUsingWriteHost: WinPE-consolestijl; Write-Host is hier bewust de outputvector.
-    # - PSUseApprovedVerbs: bestaande publieke werkwoordsvormen zijn ingeburgerd.
-    # - PSUseShouldProcessForStateChangingFunctions: de WinPE-consoleflow gebruikt bewust
-    #   geen -Confirm/-WhatIf; de enige bevestiging is de 15-secondenaftelling.
-    # - PSAvoidUsingEmptyCatchBlock: bewuste terugvalpaden (console zonder cursorpositionering).
-    # - PSUseSingularNouns: bestaande functienamen (bijv. Test-Prerequisites, Invoke-WinPEDriversPhase).
-    # - PSReviewUnusedParameter / PSUseDeclaredVarsMoreThanAssignments: bekende false positives
-    #   bij script-scope-variabelen die binnen functies worden gebruikt.
+    # Project-aware exclusions (each with a reason):
+    # - PSAvoidUsingWriteHost: WinPE console style; Write-Host is deliberately the output vector here.
+    # - PSUseApprovedVerbs: the existing public verb forms are established.
+    # - PSUseShouldProcessForStateChangingFunctions: the WinPE console flow deliberately
+    #   does not use -Confirm/-WhatIf; the only confirmation is the 15-second countdown.
+    # - PSAvoidUsingEmptyCatchBlock: deliberate fallback paths (console without cursor positioning).
+    # - PSUseSingularNouns: existing function names (e.g. Test-Prerequisites, Invoke-WinPEDriversPhase).
+    # - PSReviewUnusedParameter / PSUseDeclaredVarsMoreThanAssignments: known false positives
+    #   with script-scope variables that are used inside functions.
     ExcludeRules = @(
         'PSAvoidUsingWriteHost',
         'PSUseApprovedVerbs',

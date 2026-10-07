@@ -1,5 +1,5 @@
-name: Foutmelding / defect
-description: Meld een defect in de repository, tools of een mislukte deployment
+name: Bug report / defect
+description: Report a defect in the repository, the tools, or a failed deployment
 labels: [bug]
 body:
   - type: dropdown
@@ -8,37 +8,37 @@ body:
       label: Component
       options:
         - Deployment (RSS-Deploy / WinPE)
-        - Media-build (Update-RSSMedia)
-        - Validatie (Validate-RSSMedia / Pester)
+        - Media build (Update-RSSMedia)
+        - Validation (Validate-RSSMedia / Pester)
         - Manifest (config/sources.json)
-        - Documentatie
-        - Anders
+        - Documentation
+        - Other
     validations:
       required: true
   - type: dropdown
     id: profile
     attributes:
-      label: Surface-profiel (indien van toepassing)
-      options: ["n.v.t.", "SF4", "SF5", "SF6", "SF7", "SF8", "onbekend / niet-ondersteund"]
+      label: Surface profile (if applicable)
+      options: ["n/a", "SF4", "SF5", "SF6", "SF7", "SF8", "unknown / unsupported"]
     validations:
       required: true
   - type: textarea
-    id: beschrijving
+    id: description
     attributes:
-      label: Wat gebeurde er (symptoom)?
-      description: Vermeld de exacte foutmelding van het rode scherm of de tool-output
+      label: What happened (symptom)?
+      description: Include the exact error message from the red screen or the tool output
     validations:
       required: true
   - type: textarea
-    id: bewijs
+    id: evidence
     attributes:
-      label: Bewijs
-      description: Relevant deel van RSS-ADK-Deploy.log of RSS-Media-Validation.txt — géén serienummers of andere apparaatgegevens
+      label: Evidence
+      description: Relevant portion of RSS-ADK-Deploy.log or RSS-Media-Validation.txt — no serial numbers or other device data
     validations:
       required: true
   - type: textarea
-    id: verwacht
+    id: expected
     attributes:
-      label: Wat werd verwacht?
+      label: What was expected?
     validations:
       required: true

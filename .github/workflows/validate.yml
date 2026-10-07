@@ -1,7 +1,7 @@
 name: validate
 
-# Statistische en offline controles. CI voert NOOIT een deployment,
-# diskactie of download van Microsoft-media uit.
+# Static and offline checks. CI never runs a deployment,
+# disk action or download of Microsoft media.
 
 on:
   pull_request:
@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   powershell:
-    name: PowerShell — syntax, linting, guardrailtests
+    name: PowerShell — syntax, linting, guardrail tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -26,9 +26,9 @@ jobs:
           Install-Module PSScriptAnalyzer -RequiredVersion 1.25.0 -Scope CurrentUser -Force
           $errors = Invoke-ScriptAnalyzer -Path . -Recurse -Settings .PSScriptAnalyzerSettings.psd1 -Severity Error
           $errors | Format-Table -AutoSize | Out-String | Write-Host
-          if ($errors) { throw "PSScriptAnalyzer: $($errors.Count) fout(en)" }
+          if ($errors) { throw "PSScriptAnalyzer: $($errors.Count) errors" }
 
-      - name: Pester guardrailtests (gemockt)
+      - name: Pester guardrail tests (mocked)
         shell: pwsh
         run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
@@ -42,7 +42,7 @@ jobs:
           Invoke-Pester -Configuration $config
 
   manifest:
-    name: Manifest- en repositoryconsistentie
+    name: Manifest and repository consistency
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -51,21 +51,21 @@ jobs:
         shell: pwsh
         run: ./tools/Test-ManifestConsistency.ps1 -CIChecksums
 
-      - name: Interne markdown-links
+      - name: Internal markdown links
         shell: pwsh
         run: ./tools/Test-InternalLinks.ps1
 
-      - name: Geen Microsoft-binaries in Git
+      - name: No Microsoft binaries in Git
         shell: pwsh
         run: |
           $forbidden = '\.(wim|esd|msi|msu|iso|cab|vhd(x)?|swm|ffu)$'
           $tracked = git ls-files
           $bad = $tracked | Where-Object { $_ -match $forbidden }
-          if ($bad) { throw "verboden binaries in Git: $($bad -join ', ')" }
-          Write-Host "OK: geen Microsoft-binaries getrackt ($($tracked.Count) bestanden gecontroleerd)"
+          if ($bad) { throw "forbidden binaries in Git: $($bad -join ', ')" }
+          Write-Host "OK: no Microsoft binaries tracked ($($tracked.Count) files checked)"
 
   secrets:
-    name: Secretscan
+    name: Secret scan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7

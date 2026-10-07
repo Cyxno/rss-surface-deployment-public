@@ -1,9 +1,9 @@
 ﻿$ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 
-# Alle veiligheidsbeslissingen staan in RSS-SafetyLib.ps1 (zelfde map in boot.wim).
-# Die library is puur en parametergestuurd zodat elke guardrail getest kan worden
-# zonder ooit een echte disk aan te raken (zie tests/ in de repository).
+# All safety decisions live in RSS-SafetyLib.ps1 (same folder in boot.wim).
+# That library is pure and parameter-driven so every guardrail can be tested
+# without ever touching a real disk (see tests/ in the repository).
 . (Join-Path $PSScriptRoot 'RSS-SafetyLib.ps1')
 
 function Set-RSSTheme {
@@ -39,7 +39,7 @@ function Show-RSSTitleAnimation {
             Start-Sleep -Milliseconds 110
         }
     } catch {
-        # console zonder cursorpositionering: val terug op het statische logo
+        # console without cursor positioning: fall back to the static logo
     }
     Show-RSSArt 'Green'
 }
@@ -71,7 +71,7 @@ function Show-RSSCountdown([int]$Seconds, [string]$Text, [ConsoleColor]$Color = 
     $frames = @('|', '/', '-', '\')
     for ($remaining = $Seconds; $remaining -ge 1; $remaining--) {
         $frame = $frames[($Seconds - $remaining) % $frames.Count]
-        Write-Host ("`r  {0} {1} {2,2} seconden...   " -f $frame, $Text, $remaining) -NoNewline -ForegroundColor $Color
+        Write-Host ("`r  {0} {1} {2,2} seconds...   " -f $frame, $Text, $remaining) -NoNewline -ForegroundColor $Color
         Start-Sleep -Seconds 1
     }
     Write-Host "`r  [OK] $Text                         " -ForegroundColor Green
@@ -86,12 +86,12 @@ function Show-RSSSuccess([string]$Product, [int]$Model) {
     Write-Host "              Surface Deployment Stick V2" -ForegroundColor Yellow
     Write-Host '    ==================================================' -ForegroundColor White
     Write-Host ''
-    Write-Host '                    INSTALLATIE GESLAAGD!' -ForegroundColor White
+    Write-Host '                    INSTALLATION SUCCESSFUL!' -ForegroundColor White
     Write-Host ''
-    Write-Host "                  $Product / profiel SF$Model" -ForegroundColor White
+    Write-Host "                  $Product / profile SF$Model" -ForegroundColor White
     Write-Host ''
-    Write-Host '       Windows, Surface-drivers en UEFI-boot zijn gereed.' -ForegroundColor White
-    Write-Host '                     Verwijder de USB-stick.' -ForegroundColor White
+    Write-Host '       Windows, Surface drivers and UEFI boot are ready.' -ForegroundColor White
+    Write-Host '                     Remove the USB stick.' -ForegroundColor White
     Write-Host ''
     Write-Host '       [' -NoNewline
     for ($i = 0; $i -lt 24; $i++) {
@@ -99,19 +99,19 @@ function Show-RSSSuccess([string]$Product, [int]$Model) {
         Start-Sleep -Milliseconds 45
     }
     Write-Host ']' -ForegroundColor Yellow
-    Show-RSSCountdown 15 'Automatische herstart over' White
+    Show-RSSCountdown 15 'Automatic restart in' White
 }
 
 function Stop-Safely([string]$Message) {
     $Host.UI.RawUI.BackgroundColor = 'DarkRed'
     $Host.UI.RawUI.ForegroundColor = 'White'
     Clear-Host
-    Show-RSSBanner 'VEILIG GESTOPT'
-    Write-Host "FOUT: $Message" -ForegroundColor White
+    Show-RSSBanner 'SAFELY STOPPED'
+    Write-Host "ERROR: $Message" -ForegroundColor White
     if ($script:Log) {
         "RESULT=FAILED-SAFE MESSAGE=$Message" | Add-Content -LiteralPath $script:Log -Encoding UTF8
     }
-    Write-Host 'Houd de aan/uitknop ingedrukt om af te sluiten.'
+    Write-Host 'Hold the power button to shut down.'
     while ($true) { Start-Sleep -Seconds 30 }
 }
 
@@ -119,14 +119,14 @@ function Invoke-Native([string]$FilePath, [string[]]$Arguments, [string]$Descrip
     "COMMAND=$FilePath $($Arguments -join ' ')" | Add-Content -LiteralPath $script:Log -Encoding UTF8
     & $FilePath @Arguments 2>&1 | Tee-Object -FilePath $script:Log -Append
     if ($LASTEXITCODE -ne 0) {
-        throw "$Description mislukt met exitcode $LASTEXITCODE"
+        throw "$Description failed with exit code $LASTEXITCODE"
     }
 }
 
 try {
     Set-RSSTheme
-    Show-RSSBanner 'Automatische Surface-installatie'
-    Write-Host '  WinPE en deploymentmodules initialiseren...' -ForegroundColor Cyan
+    Show-RSSBanner 'Automatic Surface installation'
+    Write-Host '  Initializing WinPE and deployment modules...' -ForegroundColor Cyan
     Import-Module Storage -ErrorAction Stop
     Import-Module Dism -ErrorAction Stop
 
@@ -150,9 +150,9 @@ try {
     $image = Join-Path $setupRoot 'sources\install.esd'
     $driverArchive = Join-Path $mediaRoot "RSSDriverArchives\SF$model.esd"
     $expectedInf = [int]$modelProfile.infCount
-    if (-not (Test-Path -LiteralPath $image)) { throw "image ontbreekt: $image" }
-    if (-not (Test-Path -LiteralPath $driverArchive)) { throw "officieel driverarchief ontbreekt: $driverArchive" }
-    if ((Get-Item -LiteralPath $driverArchive).Length -lt 1MB) { throw "driverarchief SF$model is onverwacht klein" }
+    if (-not (Test-Path -LiteralPath $image)) { throw "image missing: $image" }
+    if (-not (Test-Path -LiteralPath $driverArchive)) { throw "official driver archive missing: $driverArchive" }
+    if ((Get-Item -LiteralPath $driverArchive).Length -lt 1MB) { throw "driver archive SF$model is unexpectedly small" }
 
     $mediaPartition = Get-Partition -DriveLetter $mediaLetter
     $mediaDisk = Get-Disk -Number $mediaPartition.DiskNumber
@@ -163,30 +163,30 @@ try {
     "MEDIA_DISK=$($mediaDisk.Number) $($mediaDisk.FriendlyName) BUS=$($mediaDisk.BusType)" | Add-Content -LiteralPath $script:Log -Encoding UTF8
     "TARGET_DISK=$($targetDisk.Number) $($targetDisk.FriendlyName) BUS=$($targetDisk.BusType) SIZE=$($targetDisk.Size)" | Add-Content -LiteralPath $script:Log -Encoding UTF8
     "IMAGE=$image DRIVERARCHIVE=$driverArchive EXPECTED_INF=$expectedInf" | Add-Content -LiteralPath $script:Log -Encoding UTF8
-    Invoke-Native 'dism.exe' @('/English','/Get-WimInfo',"/WimFile:$driverArchive",'/Index:1') 'Driverarchief controleren'
+    Invoke-Native 'dism.exe' @('/English','/Get-WimInfo',"/WimFile:$driverArchive",'/Index:1') 'Verifying driver archive'
 
-    # Pre-destructieve integriteitscontrole: hash van image en driverarchief tegen
-    # het manifest, vóórdat Disk 0 wordt aangeraakt (INVALID = STOP).
-    Test-RSSArtifactHash -Path $image -ExpectedSha256 $manifest.windows.servicedImage.installEsdSha256 -Label "Windows-image SF$model"
-    Test-RSSArtifactHash -Path $driverArchive -ExpectedSha256 $modelProfile.archiveSha256 -Label "Driverarchief SF$model"
-    "HASHCHECK=image+driverarchief overeenkomstig manifest" | Add-Content -LiteralPath $script:Log -Encoding UTF8
+    # Pre-destructive integrity check: hash of image and driver archive against
+    # the manifest, before Disk 0 is touched (INVALID = STOP).
+    Test-RSSArtifactHash -Path $image -ExpectedSha256 $manifest.windows.servicedImage.installEsdSha256 -Label "Windows image SF$model"
+    Test-RSSArtifactHash -Path $driverArchive -ExpectedSha256 $modelProfile.archiveSha256 -Label "Driver archive SF$model"
+    "HASHCHECK=image+driver archive matches the manifest" | Add-Content -LiteralPath $script:Log -Encoding UTF8
 
     Clear-Host
-    Show-RSSBanner 'Automatische Surface-installatie'
+    Show-RSSBanner 'Automatic Surface installation'
     Write-Host "  Model    : $product" -ForegroundColor White
     Write-Host "  SKU      : $systemSku" -ForegroundColor White
     Write-Host "  CPU      : $cpuVendor" -ForegroundColor White
     Write-Host "  Image    : SF$model - Windows 11 Pro" -ForegroundColor White
     Write-Host "  USB      : Disk $($mediaDisk.Number)" -ForegroundColor White
-    Write-Host "  Doelschijf: Disk $($targetDisk.Number) - $($targetDisk.FriendlyName) (NVMe)" -ForegroundColor White
-    Write-Host "  Drivers  : volledig officieel pakket ($expectedInf INF)" -ForegroundColor White
-    Write-Host "  Integriteit: image en driverarchief geverifieerd" -ForegroundColor White
+    Write-Host "  Target disk: Disk $($targetDisk.Number) - $($targetDisk.FriendlyName) (NVMe)" -ForegroundColor White
+    Write-Host "  Drivers  : full official package ($expectedInf INF)" -ForegroundColor White
+    Write-Host "  Integrity: image and driver archive verified" -ForegroundColor White
     Write-Host ''
-    Write-Host '  LET OP: DISK 0 WORDT VOLLEDIG GEWIST!' -ForegroundColor White -BackgroundColor DarkRed
-    Write-Host '  Schakel het apparaat uit tijdens de aftelling om te annuleren.' -ForegroundColor Yellow
-    Show-RSSCountdown 15 'Installatie start over' Yellow
+    Write-Host '  WARNING: DISK 0 WILL BE COMPLETELY WIPED!' -ForegroundColor White -BackgroundColor DarkRed
+    Write-Host '  Power off the device during the countdown to cancel.' -ForegroundColor Yellow
+    Show-RSSCountdown 15 'Installation starts in' Yellow
 
-    Write-RSSStep 1 5 'Disk 0 als GPT indelen...'
+    Write-RSSStep 1 5 'Partitioning Disk 0 as GPT...'
     Set-Disk -Number 0 -IsOffline $false -ErrorAction SilentlyContinue
     Set-Disk -Number 0 -IsReadOnly $false -ErrorAction SilentlyContinue
     Clear-Disk -Number 0 -RemoveData -RemoveOEM -Confirm:$false
@@ -199,28 +199,28 @@ try {
     $windowsRoot = "$($windows.DriveLetter):\"
     $efiRoot = "$($efi.DriveLetter):"
 
-    Write-RSSStep 2 5 'Windows 11 Pro-image toepassen...'
-    Invoke-Native 'dism.exe' @('/English','/Apply-Image',"/ImageFile:$image",'/Index:1',"/ApplyDir:$windowsRoot",'/CheckIntegrity') 'Windows-image toepassen'
-    if (-not (Test-Path -LiteralPath (Join-Path $windowsRoot 'Windows\System32\config\SYSTEM'))) { throw 'toegepaste Windows SYSTEM-hive ontbreekt' }
+    Write-RSSStep 2 5 'Applying Windows 11 Pro image...'
+    Invoke-Native 'dism.exe' @('/English','/Apply-Image',"/ImageFile:$image",'/Index:1',"/ApplyDir:$windowsRoot",'/CheckIntegrity') 'Applying Windows image'
+    if (-not (Test-Path -LiteralPath (Join-Path $windowsRoot 'Windows\System32\config\SYSTEM'))) { throw 'applied Windows SYSTEM hive missing' }
 
-    Write-RSSStep 3 5 'Volledige officiele Surface-drivers installeren...'
+    Write-RSSStep 3 5 'Installing full official Surface drivers...'
     $driverStage = Join-Path $windowsRoot 'RSS-DriverStage'
     New-Item -ItemType Directory -Path $driverStage -Force | Out-Null
-    Invoke-Native 'X:\Tools\wimlib-imagex.exe' @('apply',$driverArchive,'1',$driverStage,'--check') 'Driverarchief uitpakken'
+    Invoke-Native 'X:\Tools\wimlib-imagex.exe' @('apply',$driverArchive,'1',$driverStage,'--check') 'Extracting driver archive'
     $sourceInf = @(Get-ChildItem -LiteralPath $driverStage -Recurse -File -Filter '*.inf')
-    if ($sourceInf.Count -ne $expectedInf) { throw "uitgepakt SF$model-pakket bevat $($sourceInf.Count) INF in plaats van $expectedInf" }
+    if ($sourceInf.Count -ne $expectedInf) { throw "extracted SF$model package contains $($sourceInf.Count) INF files instead of $expectedInf" }
     $before = @(Get-WindowsDriver -Path $windowsRoot -ErrorAction Stop).Count
     Add-WindowsDriver -Path $windowsRoot -Driver $driverStage -Recurse -ErrorAction Stop | Out-File -LiteralPath $script:Log -Append -Encoding UTF8
     $after = @(Get-WindowsDriver -Path $windowsRoot -ErrorAction Stop).Count
     "OFFICIAL_INF=$($sourceInf.Count) DRIVERSTORE_BEFORE=$before DRIVERSTORE_AFTER=$after" | Add-Content -LiteralPath $script:Log -Encoding UTF8
-    if ($after -lt $before) { throw 'DriverStore-aantal is onverwacht afgenomen' }
+    if ($after -lt $before) { throw 'DriverStore count unexpectedly decreased' }
     Remove-Item -LiteralPath $driverStage -Recurse -Force
 
-    Write-RSSStep 4 5 'UEFI-opstartbestanden maken...'
+    Write-RSSStep 4 5 'Creating UEFI boot files...'
     Invoke-Native 'bcdboot.exe' @((Join-Path $windowsRoot 'Windows'),'/s',$efiRoot,'/f','UEFI','/l','nl-NL') 'BCDBoot'
-    if (-not (Test-Path -LiteralPath (Join-Path "$efiRoot\" 'EFI\Microsoft\Boot\bootmgfw.efi'))) { throw 'UEFI bootmgfw.efi ontbreekt' }
+    if (-not (Test-Path -LiteralPath (Join-Path "$efiRoot\" 'EFI\Microsoft\Boot\bootmgfw.efi'))) { throw 'UEFI bootmgfw.efi missing' }
 
-    Write-RSSStep 5 5 'Eindcontrole geslaagd.'
+    Write-RSSStep 5 5 'Final check passed.'
     "RESULT=SUCCESS DRIVERSTORE_BEFORE=$before DRIVERSTORE_AFTER=$after" | Add-Content -LiteralPath $script:Log -Encoding UTF8
     Show-RSSSuccess $product $model
     wpeutil reboot
