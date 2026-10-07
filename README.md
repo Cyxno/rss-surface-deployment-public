@@ -3,10 +3,10 @@
 **Fully automated Windows 11 deployment stick for Microsoft Surface Laptop — offline, reproducible and fail-safe.**
 
 [![CI](https://github.com/Cyxno/rss-surface-deployment-public/actions/workflows/validate.yml/badge.svg)](https://github.com/Cyxno/rss-surface-deployment-public/actions/workflows/validate.yml)
-[![Release](https://img.shields.io/badge/release-v2.0.0-0F4761)](../../releases)
-[![PowerShell](https://img.shields.io/badge/PowerShell-5.1%20%7C%207%2B-5391FE?logo=powershell&logoColor=white)](https://learn.microsoft.com/powershell/)
-[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20WinPE-0078D4?logo=windows11&logoColor=white)]()
-[![Validation](https://img.shields.io/badge/stick-validation-read--only%20PASS-2EA043)]()
+[![Release](https://img.shields.io/badge/release-v2.0.0-2EA043)](https://github.com/Cyxno/rss-surface-deployment-public/releases)
+[![PowerShell](https://img.shields.io/badge/PowerShell-5.1%20%7C%207%2B-2EA043?logo=powershell&logoColor=white)](https://learn.microsoft.com/powershell/)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20WinPE-2EA043?logo=windows11&logoColor=white)](https://learn.microsoft.com/windows-hardware/manufacture/desktop/winpe-intro)
+[![Validation](https://img.shields.io/badge/stick%20validation-read--only%20PASS-2EA043)](#validation-and-tests)
 
 > [!WARNING]
 > **This stick wipes the internal NVMe disk (Disk 0) without a confirmation prompt** — after a full preflight and a countdown of 15 seconds. Use the stick only on a Surface Laptop designated for this purpose whose data may deliberately be erased. Uncertain situations always lead to a safe stop before the first write action.
