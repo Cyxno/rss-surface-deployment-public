@@ -179,29 +179,51 @@ Describe 'Modeldetectie (Get-RSSModelProfile)' {
 Describe 'Mediaherkenning (Resolve-RSSMediaRoot)' {
 
     It 'vindt exact de enige RSS-datapartitie (geval: supported model + geldige media)' {
-        # Padnormalisatie: Join-Path gebruikt op niet-Windows forward slashes.
-        $script:existing = @(
-            'D:\RSSSetup\SF4\sources\install.esd',
-            'D:\RSSSetup\SF8\sources\install.esd'
-        )
-        Mock Test-Path { param($LiteralPath) $script:existing -contains ($LiteralPath -replace '/', '\') }
-        Resolve-RSSMediaRoot -DriveRoots @('C:\', 'D:\', 'X:\') | Should -Be 'D:'
+        $caseRoot = Join-Path $TestDrive 'valid'
+        $roots = @('c', 'd', 'x') | ForEach-Object {
+            $root = Join-Path $caseRoot $_
+            New-Item -ItemType Directory -Path $root -Force | Out-Null
+            $root
+        }
+        foreach ($mediaProfile in 'SF4', 'SF8') {
+            $file = Join-Path $roots[1] "RSSSetup/$mediaProfile/sources/install.esd"
+            New-Item -ItemType Directory -Path (Split-Path $file -Parent) -Force | Out-Null
+            Set-Content -LiteralPath $file -Value 'test'
+        }
+        Resolve-RSSMediaRoot -DriveRoots $roots | Should -Be $roots[1].TrimEnd([char]92, [char]47)
     }
 
     It 'stopt bij nul kandidaat-datapartities (AMBIGUOUS = STOP)' {
-        Mock Test-Path { $false }
-        { Resolve-RSSMediaRoot -DriveRoots @('C:\', 'D:\') } | Should -Throw '*gevonden: 0*'
+        $caseRoot = Join-Path $TestDrive 'zero'
+        $roots = @('c', 'd') | ForEach-Object {
+            $root = Join-Path $caseRoot $_
+            New-Item -ItemType Directory -Path $root -Force | Out-Null
+            $root
+        }
+        { Resolve-RSSMediaRoot -DriveRoots $roots } | Should -Throw '*gevonden: 0*'
     }
 
     It 'stopt bij meerdere kandidaat-datapartities (AMBIGUOUS = STOP)' {
-        Mock Test-Path { $true }
-        { Resolve-RSSMediaRoot -DriveRoots @('C:\', 'D:\', 'E:\') } | Should -Throw '*gevonden: 3*'
+        $caseRoot = Join-Path $TestDrive 'multiple'
+        $roots = @('c', 'd', 'e') | ForEach-Object {
+            $root = Join-Path $caseRoot $_
+            New-Item -ItemType Directory -Path $root -Force | Out-Null
+            foreach ($mediaProfile in 'SF4', 'SF8') {
+                $file = Join-Path $root "RSSSetup/$mediaProfile/sources/install.esd"
+                New-Item -ItemType Directory -Path (Split-Path $file -Parent) -Force | Out-Null
+                Set-Content -LiteralPath $file -Value 'test'
+            }
+            $root
+        }
+        { Resolve-RSSMediaRoot -DriveRoots $roots } | Should -Throw '*gevonden: 3*'
     }
 
     It 'stopt als alleen SF4-image aanwezig is en SF8 ontbreekt (incomplete media)' {
-        $script:existing = @('D:\RSSSetup\SF4\sources\install.esd')
-        Mock Test-Path { param($LiteralPath) $script:existing -contains $LiteralPath }
-        { Resolve-RSSMediaRoot -DriveRoots @('D:\') } | Should -Throw '*gevonden: 0*'
+        $root = Join-Path $TestDrive 'incomplete/d'
+        $file = Join-Path $root 'RSSSetup/SF4/sources/install.esd'
+        New-Item -ItemType Directory -Path (Split-Path $file -Parent) -Force | Out-Null
+        Set-Content -LiteralPath $file -Value 'test'
+        { Resolve-RSSMediaRoot -DriveRoots @($root) } | Should -Throw '*gevonden: 0*'
     }
 }
 
