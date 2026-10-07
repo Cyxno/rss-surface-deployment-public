@@ -179,8 +179,9 @@ Describe 'Modeldetectie (Get-RSSModelProfile)' {
 Describe 'Mediaherkenning (Resolve-RSSMediaRoot)' {
 
     It 'vindt exact de enige RSS-datapartitie (geval: supported model + geldige media)' {
+        $caseRoot = Join-Path $TestDrive 'valid'
         $roots = @('c', 'd', 'x') | ForEach-Object {
-            $root = Join-Path $TestDrive $_
+            $root = Join-Path $caseRoot $_
             New-Item -ItemType Directory -Path $root -Force | Out-Null
             $root
         }
@@ -189,12 +190,13 @@ Describe 'Mediaherkenning (Resolve-RSSMediaRoot)' {
             New-Item -ItemType Directory -Path (Split-Path $file -Parent) -Force | Out-Null
             Set-Content -LiteralPath $file -Value 'test'
         }
-        Resolve-RSSMediaRoot -DriveRoots $roots | Should -Be $roots[1].TrimEnd('\\', '/')
+        Resolve-RSSMediaRoot -DriveRoots $roots | Should -Be $roots[1].TrimEnd([char]92, [char]47)
     }
 
     It 'stopt bij nul kandidaat-datapartities (AMBIGUOUS = STOP)' {
+        $caseRoot = Join-Path $TestDrive 'zero'
         $roots = @('c', 'd') | ForEach-Object {
-            $root = Join-Path $TestDrive $_
+            $root = Join-Path $caseRoot $_
             New-Item -ItemType Directory -Path $root -Force | Out-Null
             $root
         }
@@ -202,8 +204,9 @@ Describe 'Mediaherkenning (Resolve-RSSMediaRoot)' {
     }
 
     It 'stopt bij meerdere kandidaat-datapartities (AMBIGUOUS = STOP)' {
+        $caseRoot = Join-Path $TestDrive 'multiple'
         $roots = @('c', 'd', 'e') | ForEach-Object {
-            $root = Join-Path $TestDrive $_
+            $root = Join-Path $caseRoot $_
             New-Item -ItemType Directory -Path $root -Force | Out-Null
             foreach ($mediaProfile in 'SF4', 'SF8') {
                 $file = Join-Path $root "RSSSetup/$mediaProfile/sources/install.esd"
@@ -216,7 +219,7 @@ Describe 'Mediaherkenning (Resolve-RSSMediaRoot)' {
     }
 
     It 'stopt als alleen SF4-image aanwezig is en SF8 ontbreekt (incomplete media)' {
-        $root = Join-Path $TestDrive 'd'
+        $root = Join-Path $TestDrive 'incomplete/d'
         $file = Join-Path $root 'RSSSetup/SF4/sources/install.esd'
         New-Item -ItemType Directory -Path (Split-Path $file -Parent) -Force | Out-Null
         Set-Content -LiteralPath $file -Value 'test'
