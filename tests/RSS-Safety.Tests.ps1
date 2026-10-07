@@ -184,8 +184,8 @@ Describe 'Mediaherkenning (Resolve-RSSMediaRoot)' {
             New-Item -ItemType Directory -Path $root -Force | Out-Null
             $root
         }
-        foreach ($profile in 'SF4', 'SF8') {
-            $file = Join-Path $roots[1] "RSSSetup/$profile/sources/install.esd"
+        foreach ($mediaProfile in 'SF4', 'SF8') {
+            $file = Join-Path $roots[1] "RSSSetup/$mediaProfile/sources/install.esd"
             New-Item -ItemType Directory -Path (Split-Path $file -Parent) -Force | Out-Null
             Set-Content -LiteralPath $file -Value 'test'
         }
@@ -205,8 +205,8 @@ Describe 'Mediaherkenning (Resolve-RSSMediaRoot)' {
         $roots = @('c', 'd', 'e') | ForEach-Object {
             $root = Join-Path $TestDrive $_
             New-Item -ItemType Directory -Path $root -Force | Out-Null
-            foreach ($profile in 'SF4', 'SF8') {
-                $file = Join-Path $root "RSSSetup/$profile/sources/install.esd"
+            foreach ($mediaProfile in 'SF4', 'SF8') {
+                $file = Join-Path $root "RSSSetup/$mediaProfile/sources/install.esd"
                 New-Item -ItemType Directory -Path (Split-Path $file -Parent) -Force | Out-Null
                 Set-Content -LiteralPath $file -Value 'test'
             }
