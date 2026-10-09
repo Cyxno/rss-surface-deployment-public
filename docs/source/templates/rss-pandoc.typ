@@ -119,7 +119,7 @@
   #v(4pt)
   #line(length: 58%, stroke: 1pt + accent)
   #v(2.4cm)
-  #text(size: 8.5pt, fill: text-gray)[Source-available administration document — no open-source license. #linebreak() This PDF is generated; change the source in docs/source and rebuild with tools/Build-Documentation.ps1.]
+  #text(size: 8.5pt, fill: text-gray)[Administration document — AGPL-3.0-only. Copyright (C) 2026 Cyxno. #linebreak() This PDF is generated; change the source in docs/source and rebuild with tools/Build-Documentation.ps1.]
 ]
 #pagebreak()
 

@@ -2,7 +2,7 @@
 title: "RSS — Test and Release Procedure"
 subtitle: "From code change to production release"
 version: "2.0"
-classification: "Source-available — no open-source license"
+classification: "Open source — AGPL-3.0-only"
 audience: "IT administration, release manager"
 ---
 

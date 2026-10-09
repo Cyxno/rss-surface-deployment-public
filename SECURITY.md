@@ -2,7 +2,7 @@
 
 ## Scope
 
-RSS is a deployment project for rolling out Windows 11 on Microsoft Surface Laptop hardware. No open-source license is granted; the code is made available 'as-is'.
+RSS is a deployment project for rolling out Windows 11 on Microsoft Surface Laptop hardware. Licensed under AGPL-3.0-only (see [LICENSE](LICENSE)); the code is made available 'as-is'.
 
 ## Reporting a security issue
 

@@ -15,7 +15,7 @@
     "name": "RSS - Surface Deployment Stick",
     "version": "2.0.0",
     "internalName": "RSS Surface Deployment Stick V2",
-    "classification": "Source-available - no open-source license",
+    "classification": "Open source - AGPL-3.0-only",
     "audience": "IT administration",
     "productionRelease": {
       "tag": "rss-2026-09-sf8",

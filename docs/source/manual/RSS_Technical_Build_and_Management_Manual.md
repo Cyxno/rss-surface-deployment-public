@@ -2,7 +2,7 @@
 title: "RSS — Technical Build and Management Manual"
 subtitle: "Surface Deployment Stick — automated Windows 11 deployment for Surface Laptop"
 version: "2.0"
-classification: "Source-available — no open-source license"
+classification: "Open source — AGPL-3.0-only"
 audience: "IT administration and workplace management"
 ---
 
@@ -361,7 +361,7 @@ See chapter 17 and the separate procedure (`RSS_Test_and_Release_Procedure`). Ve
 
 - No secrets, passwords, tokens, product keys, hardware hashes or serial numbers in Git or logs; CI runs gitleaks and a binary scanner.
 - RSS uses only official Microsoft sources with hash and signature checks; no internet during deployment.
-- Stick documentation contains no organization or customer data; the repository remains internal/proprietary without an open-source license.
+- Stick documentation contains no organization or customer data; the repository is licensed under AGPL-3.0-only (see LICENSE in the repository root).
 - Deployment logs stay on the stick and are not collected centrally; in incidents, share them only deliberately and minimally.
 - Secure Boot stays on; the boot environment contains only Microsoft-signed binaries and the BCD without test flags (validated).
 

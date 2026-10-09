@@ -2,7 +2,7 @@
 title: "RSS — Operations Manual"
 subtitle: "Using the stick on a Surface Laptop"
 version: "2.0"
-classification: "Source-available — no open-source license"
+classification: "Open source — AGPL-3.0-only"
 audience: "Staff who actually deploy the stick"
 ---
 

@@ -3,6 +3,7 @@
 **Fully automated Windows 11 deployment stick for Microsoft Surface Laptop — offline, reproducible and fail-safe.**
 
 [![CI](https://github.com/Cyxno/rss-surface-deployment-public/actions/workflows/validate.yml/badge.svg)](https://github.com/Cyxno/rss-surface-deployment-public/actions/workflows/validate.yml)
+[![License: AGPL-3.0-only](https://img.shields.io/github/license/Cyxno/rss-surface-deployment-public?cacheSeconds=3600)](LICENSE)
 [![Release](https://img.shields.io/badge/release-v2.0.0-2EA043)](https://github.com/Cyxno/rss-surface-deployment-public/releases)
 [![PowerShell](https://img.shields.io/badge/PowerShell-5.1%20%7C%207%2B-2EA043?logo=powershell&logoColor=white)](https://learn.microsoft.com/powershell/)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20WinPE-2EA043?logo=windows11&logoColor=white)](https://learn.microsoft.com/windows-hardware/manufacture/desktop/winpe-intro)
@@ -121,4 +122,8 @@ Evidence-based symptom→cause→diagnosis→solution for boot issues, WinPE inp
 
 ## Disclaimer
 
-This repository is made available 'as-is': no open-source license is granted and use is at your own risk. RSS wipes disks: using it implies the user is authorized and informed. Microsoft, Surface and Windows are trademarks of Microsoft Corporation; RSS is not a Microsoft product.
+RSS wipes disks: using it implies the user is authorized and informed. Microsoft, Surface and Windows are trademarks of Microsoft Corporation; RSS is not a Microsoft product.
+
+## License
+
+Copyright (C) 2026 Cyxno. This repository is licensed under the **GNU Affero General Public License v3.0 only** (AGPL-3.0-only) — see [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md).

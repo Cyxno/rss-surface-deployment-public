@@ -1,6 +1,6 @@
 # Contributing
 
-This is a **source-available** project without an open-source license; the repository is maintained by its owner. External pull requests are not accepted; an issue with clear reproduction steps is welcome.
+This project is licensed under the **GNU Affero General Public License v3.0 only** (AGPL-3.0-only) — see [LICENSE](LICENSE). The repository is maintained by its owner. External pull requests are not accepted; an issue with clear reproduction steps is welcome.
 
 ## Core rule: proof before change
 
